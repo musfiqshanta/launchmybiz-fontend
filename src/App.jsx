@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy, useState} from 'react';
 import {
   Route,
   RouterProvider,
@@ -134,6 +134,7 @@ function App() {
       </Helmet>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+       
         <ToastContainer position="top-right" autoClose={3000} />
       </QueryClientProvider>
     </>

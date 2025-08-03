@@ -7,6 +7,10 @@ import LLCFeaturesSection from '../components/LLCFeatures.jsx'
 import Footer from '../components/Footer.jsx'
 import ThreeStepSection from '../components/ThreeStepSection.jsx'
 import {Box} from '@mui/material'
+import ServicesSection from '../components/ServiceSection.jsx';
+import FoundersAndPackages from '../components/FounderSection.jsx';
+import FAQSection from '../components/FaqSection.jsx';
+import WhyUsSection from '../components/WhyUsSection.jsx';
 
 function HomePage() {
  // const [count, setCount] = useState(0)
@@ -24,10 +28,14 @@ function HomePage() {
       </Helmet>
       <Box sx={{p:0,minWidth:'100%'}}>
         <LLCForm/>
-        <LLCIncluded/>
+        <ServicesSection></ServicesSection>
+        <WhyUsSection></WhyUsSection>
+        <FoundersAndPackages></FoundersAndPackages>
+        <FAQSection></FAQSection>
+        {/* <LLCIncluded/>
         <TestimonialCarousel/>
-        <LLCFeaturesSection/>
-        <ThreeStepSection/>
+         <LLCFeaturesSection/>
+        <ThreeStepSection/> */}
         <Footer/>
       </Box>
     </>
