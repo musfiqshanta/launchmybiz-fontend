@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useRef, } from 'react';
 import { Box, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 import RocketIcon from '@mui/icons-material/RocketLaunch';
@@ -19,6 +20,7 @@ export default function WhyUsSection() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end end'] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 880]);
+   const rotate = useTransform(scrollYProgress, [0, 1], [0, 180]);
 
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down('md'));
@@ -76,13 +78,14 @@ export default function WhyUsSection() {
           top: 118,
           zIndex: 2,
           y,
+          rotate,
         }}
       >   
       <Box
           component="img"
           src={rocket}
           alt="Trustpilot"
-          
+          style={{ rotate: "180deg"}}
         />
         {/* <RocketIcon fontSize="large" style={{ padding: 5, backgroundColor: '#d7d7d7ff', borderRadius: 50 }} color="error" /> */}
       </motion.div> </>
