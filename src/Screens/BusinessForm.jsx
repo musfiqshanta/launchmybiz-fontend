@@ -1,17 +1,13 @@
-import { useState } from 'react'
+
 import { Helmet } from 'react-helmet'
 
-import LLCForm from "../components/LLCFormation.jsx";
-import LLCIncluded from '../components/LLCIncluded.jsx'
-import TestimonialCarousel from '../components/TestimonialCarousel.jsx'
-import LLCFeaturesSection from '../components/LLCFeatures.jsx'
 import Footer from '../components/Footer.jsx'
-import ThreeStepSection from '../components/ThreeStepSection.jsx'
 import {Box} from '@mui/material'
 import BusinessForm from '../components/BusinessForm.jsx';
+import Navbar from '../components/Navbar.jsx';
 
 function BusinessFormScreen() {
-  const [count, setCount] = useState(0)
+ 
 
   return (
     <>
@@ -24,8 +20,11 @@ function BusinessFormScreen() {
         <meta property="og:url" content="https://www.launchmybiz.net/business-form" />
         <meta property="og:image" content="https://www.launchmybiz.net/mainlogo-3-2.png" />
       </Helmet>
-      <Box sx={{p:0,minWidth:'100%'}}>
+      <Box sx={{p:0,minWidth:'100%', background: 'linear-gradient(#fce8d3, #fff)', }}>
+        <Box sx={{p:2}}>
+        <Navbar ></Navbar>
          <BusinessForm/>
+         </Box>
          <Footer/>
       </Box>
     </>

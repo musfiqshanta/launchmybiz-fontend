@@ -82,7 +82,33 @@ export default function FoundersAndPackages() {
       </Typography>
 
       <Box sx={{ my: 4, }}>
-  <Box sx={{ position: 'relative', pb: 4 }}> {/* Added padding bottom to make space for pagination */}
+  <Box sx={{ position: 'relative', pb: 4,
+
+   '.swiper-pagination': {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      bottom: 0, // Keep it at the bottom
+      width: '100%',
+      
+    },
+   '.swiper-pagination-bullet': {
+      width: 15,
+      height: 5,
+      borderRadius: '999px',
+      backgroundColor: 'rgba(255, 0, 0, 0.4)',
+      border: '1px solid red',
+      opacity: 1,
+      transition: 'all 0.3s ease',
+      
+    },
+    '.swiper-pagination-bullet-active': {
+      width: 8,
+      height: 8,
+      backgroundColor: 'red',
+      borderRadius: '50%',
+      
+    }, }}> {/* Added padding bottom to make space for pagination */}
     <Swiper
       modules={[Pagination, Autoplay]}
       pagination={{ clickable: true }}

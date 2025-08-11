@@ -9,33 +9,20 @@ import {
   InputLabel,
   Paper,
   Grid,
-  Container
+  Container,
+  Link
 } from '@mui/material';
 import { FaRocket, FaRegBuilding, FaFingerprint, FaShieldAlt, FaBullhorn } from 'react-icons/fa';
-//import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import bannerbackground from '../assets/Untitled-1 1.png';
 import bannerimage from '../assets/Object 1.png';
 import trustpilot from '../assets/image 14.png';
-// import chess from '../assets/chess 1.png';
-// import brand from '../assets/brand-badge 1.png';
-// import idCard from '../assets/id-card 1.png';
-// import memo from '../assets/memo-circle-check (2) 1.png';
 
-
-// const steps = [
-//   { number: 1, text: 'Select your State' },
-//   { number: 2, text: 'Submit your business details' },
-//   { number: 3, text: 'Let our experts handle the rest!' }
-// ];
 
 const LLCForm = () => {
-  // const [state, setState] = React.useState('');
-  // const navigate = useNavigate();
   
-  // const handleChange = (event) => {
-  //   setState(event.target.value);
-  // };
+  
+ 
   // const usStatesWithPrices = [
   //   { name: "Alabama", label: "Alabama-Standard $587.40" },
   //   { name: "Alaska", label: "Alaska-Standard $624.80" },
@@ -243,7 +230,8 @@ const LLCForm = () => {
             </Box>
           ))}
         </Box>
-
+         
+         <Link href="/business-form" >
         <Button
           variant="contained"
           sx={{
@@ -260,7 +248,8 @@ const LLCForm = () => {
           }}
         >
           Get Started <FaRocket style={{ marginLeft: 8 }} />
-        </Button>
+        </Button> 
+        </Link>
       </Box>
 
       {/* RIGHT SECTION */}

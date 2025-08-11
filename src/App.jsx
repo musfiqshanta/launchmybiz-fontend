@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState} from 'react';
+import { Suspense} from 'react';
 import {
   Route,
   RouterProvider,
@@ -20,6 +20,11 @@ import AdminRoute from './lib/AdminRoute.jsx';
 import AdminLogin from '../src/components/AdminLoginPage.jsx'
 import AdminPanle from './components/AdminPanel.jsx';
 import BusinessForm from './Screens/BusinessForm.jsx'
+import SignInPage from './Screens/Signin.jsx';
+import SignupPage from './Screens/SignUp.jsx';
+import ResponsiveDashboardLayout from './Screens/DashboardLayout.jsx';
+import Profile from './components/Profile.jsx';
+import Orders from './components/Orders.jsx';
  
 function NotFound() {
   return (
@@ -73,7 +78,11 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<HomePage />} />
-
+       <Route path="/signin" element={<SignInPage />} />
+       <Route path="/signup" element={<SignupPage />} />
+       <Route path="/user/dashboard" element={<ResponsiveDashboardLayout />} />
+        <Route path="/dashboard/profile" element={<Profile />} />
+          <Route path="/dashboard/orders" element={<Orders />} />
       <Route
         path="/business-form"
         element={
