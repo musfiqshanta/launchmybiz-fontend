@@ -25,6 +25,8 @@ import SignupPage from './Screens/SignUp.jsx';
 import ResponsiveDashboardLayout from './Screens/DashboardLayout.jsx';
 import Profile from './components/Profile.jsx';
 import Orders from './components/Orders.jsx';
+import UserRoute from './lib/UserRoute.jsx';
+import DashboardOverview from './components/DashboardOverview.jsx';
  
 function NotFound() {
   return (
@@ -78,11 +80,16 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route path="/" element={<HomePage />} />
-       <Route path="/signin" element={<SignInPage />} />
-       <Route path="/signup" element={<SignupPage />} />
-       <Route path="/user/dashboard" element={<ResponsiveDashboardLayout />} />
-        <Route path="/dashboard/profile" element={<Profile />} />
-          <Route path="/dashboard/orders" element={<Orders />} />
+      <Route path="/signin" element={<SignInPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+
+      <Route element={<UserRoute />}>
+        <Route path="/user/dashboard" element={<ResponsiveDashboardLayout />}>
+          <Route index element={<DashboardOverview />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="orders" element={<Orders />} />
+        </Route>
+      </Route>
       <Route
         path="/business-form"
         element={

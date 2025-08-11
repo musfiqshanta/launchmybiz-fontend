@@ -22,7 +22,7 @@ const ResponsiveDashboardLayout = () => {
       <CssBaseline />
 
       {/* App Bar with hamburger menu on mobile */}
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar position="fixed" color="default" elevation={1} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
           {isMobile && (
             <IconButton
@@ -35,7 +35,7 @@ const ResponsiveDashboardLayout = () => {
               <MenuIcon />
             </IconButton>
           )}
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 700 }}>
             User Dashboard
           </Typography>
         </Toolbar>
@@ -83,7 +83,7 @@ const ResponsiveDashboardLayout = () => {
           flexGrow: 1,
           p: 3,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          mt: { xs: "56px", sm: "64px" }, // space for AppBar height on xs/sm
+          mt: { xs: "56px", sm: "64px" },
         }}
       >
         <Outlet />
