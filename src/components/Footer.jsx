@@ -62,11 +62,11 @@ const ContactRow = ({ IconComp, children, href }) => (
       <Typography sx={{ color: 'grey.300', fontSize: '0.98rem' }}>{children}</Typography>
     )}
   </Box>
-);
+);   
 
 export default function Footer() {
   return (
-    <Box component="footer" sx={{ bgcolor: '#000', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+    <Box id='footer'  conent="footer" sx={{ bgcolor: '#000', color: '#fff', position: 'relative', overflow: 'hidden' }}>
 
       <Container maxWidth="100%" sx={{ pt: { xs: 5, md: 6 }, position: 'relative', }} >
         <Box display={"flex"} flexDirection={{xs: "column", md: "row"}} px={{xs: 1, md: 10}} mb={{xs: 0, md: 1}} alignItems="flex-start" justifyContent={"center"} sx={{ height: {xs: "auto", md: '42vh'}}}>
@@ -154,15 +154,15 @@ export default function Footer() {
               
             }}
           >
-            <Typography variant="body2" sx={{ color: 'grey.500' }}>
+            <Typography variant="body2" sx={{ color: 'grey.500', fontSize: {xs: '10px', md: '14px'}, }}>
               Copyright © 2004–2025 LaunchmyBiz - All Rights Reserved.
             </Typography>
 
             <Box sx={{ display: 'flex', gap: 3 }}>
-              <Link href="/privacy-policy" underline="none" sx={{ color: 'grey.400', '&:hover': { color: 'common.white' } }}>
+              <Link href="/privacy-policy" underline="none" sx={{ color: 'grey.400', fontSize: {xs: '10px', md: '14px'}, '&:hover': { color: 'common.white' } }}>
                 PRIVACY POLICY
               </Link>
-              <Link href="/disclaimer" underline="none" sx={{ color: 'grey.400', '&:hover': { color: 'common.white' } }}>
+              <Link href="/disclaimer" underline="none" sx={{ color: 'grey.400', fontSize: {xs: '10px', md: '14px'}, '&:hover': { color: 'common.white' } }}>
                 DISCLAIMER
               </Link>
             </Box>

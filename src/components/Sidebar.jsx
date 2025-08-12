@@ -4,7 +4,9 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonIcon from '@mui/icons-material/Person';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../lib/AuthContext";
+
 
 const menuItems = [
   { text: "Overview", path: "/user/dashboard", icon: <DashboardIcon /> },
@@ -13,7 +15,9 @@ const menuItems = [
 ];
 
 const Sidebar = ({ onItemClick }) => {
+  const { logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <List sx={{ pt: 10}}>
@@ -39,10 +43,7 @@ const Sidebar = ({ onItemClick }) => {
       ))}
       <Divider sx={{ my: 1 }} />
       <ListItemButton
-        onClick={() => {
-          try { localStorage.removeItem('token'); } catch {}
-          window.location.href = '/';
-        }}
+        onClick={() => { logout(); navigate('/'); }}
         sx={{
           mx: 1,
           my: 0.5,

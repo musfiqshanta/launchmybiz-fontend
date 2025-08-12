@@ -27,6 +27,7 @@ import Profile from './components/Profile.jsx';
 import Orders from './components/Orders.jsx';
 import UserRoute from './lib/UserRoute.jsx';
 import DashboardOverview from './components/DashboardOverview.jsx';
+import { AuthProvider } from './lib/AuthContext.jsx';
  
 function NotFound() {
   return (
@@ -149,9 +150,10 @@ function App() {
     
       </Helmet>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-       
-        <ToastContainer position="top-right" autoClose={3000} />
+        <AuthProvider>
+          <RouterProvider router={router} />
+          <ToastContainer position="top-right" autoClose={3000} />
+        </AuthProvider>
       </QueryClientProvider>
     </>
   );

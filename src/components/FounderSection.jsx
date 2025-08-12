@@ -164,7 +164,7 @@ export default function FoundersAndPackages() {
   </Box>
 </Box>
 
-      <Box mt={10}>
+      <Box id='pricing' mt={10}>
         <Typography variant="h4" align="center" fontSize={{xs: "36px", md:"64px"}} fontWeight="500" gutterBottom>
           Packages
         </Typography>
@@ -173,14 +173,12 @@ export default function FoundersAndPackages() {
         </Typography>
 
         <Grid
-   container
-  spacing={{xs: 4, md: 2}}
-  mt={4}
-  justifyContent="center"
-  // p={0}
-  // border={2}
-  // alignItems="stretch"
->
+            container
+           spacing={{xs: 4, md: 2}}
+           mt={4}
+           justifyContent="center"
+          
+         >
   {packages.map((pkg, index) => (
     <Grid
       item

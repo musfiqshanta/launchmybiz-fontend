@@ -28,13 +28,13 @@ export default function Orders() {
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight={700} mb={2}>Orders</Typography>
+      <Typography textAlign={'center'} variant="h5" fontWeight={700} mb={2}>Orders</Typography>
       <Card sx={{ borderRadius: 2 }}>
         <CardContent>
           {isLoading ? (
-            <Typography>Loading...</Typography>
+            <Typography textAlign={'center'} fontSize={20} display={'flex'} justifyContent={'center'} alignItems={'center'}  minHeight={'70vh'}>Loading...</Typography>
           ) : isError ? (
-            <Typography color="error">Failed to load orders.</Typography>
+            <Typography textAlign={'center'} fontSize={20} color="#e70000">Failed to load orders.</Typography>
           ) : (
             <TableContainer>
               <Table size="small">

@@ -13,6 +13,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import image1 from "../assets/Mobile login-pana.png"; // Replace with your signup illustration
+import { toast } from "react-toastify";
 
 // Validation schema
 const SignupSchema = Yup.object().shape({
@@ -33,7 +34,7 @@ export default function SignupPage() {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#f5f8fa",
-         px: 3
+         px: 2
       }}
     >
       <Box
@@ -72,13 +73,14 @@ export default function SignupPage() {
         <Box
           sx={{
             flex: 1,
-            p: 4,
+            py: 4,
+            px: {xs:2,md:4},
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
           }}
         >
-          <Typography variant="h5" fontWeight="bold" mb={3}>
+          <Typography variant="h5" textAlign={{xs: 'center'}} fontWeight="bold" mb={3}>
             Create an Account
           </Typography>
 
@@ -87,20 +89,23 @@ export default function SignupPage() {
             validationSchema={SignupSchema}
             onSubmit={async (values, { setSubmitting }) => {
               try {
-                const res = await fetch("http://localhost:5000/api/signup", {
+                console.log(values);
+                
+                const res = await fetch("http://localhost:5001/api/customers/signup", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify(values),
                 });
 
                 if (!res.ok) {
-                  throw new Error("Signup failed");
+                  toast.error("Signup failed");
                 }
 
                 const data = await res.json();
+                toast.success("Signup successfull");
                 console.log("Signup success:", data);
                 navigate("/signin");
-                localStorage.setItem("token", data.token);
+                // localStorage.setItem("token", data.token);
               } catch (error) {
                 alert(error.message);
               } finally {

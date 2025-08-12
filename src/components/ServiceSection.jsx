@@ -3,16 +3,14 @@
 import React from "react";
 import { Box, Typography, Card, CardContent } from "@mui/material";
 import { motion } from "framer-motion";
-// import icon1 from '../assets/registration-paper 1.png';
-// import icon2 from '../assets/registration-paper 1 (1).png';
-// import icon3 from '../assets/registration-paper 1 (2).png';
-// import icon4 from '../assets/registration-paper 1 (3).png';
+
 
 const MotionCard = motion(Card);
 
 const ServicesSection = () => {
   return (
     <Box
+    id='services'
       sx={{
         backgroundColor: "#f4f4f4",
         px: 2,

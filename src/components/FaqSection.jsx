@@ -62,7 +62,7 @@ const FaqSection = () => {
  
 
   return (
-    <Container sx={{ py: 6 }}>
+    <Container id='faq' sx={{ py: 6 }}>
       <Typography variant="h4" align="center" gutterBottom>FAQs</Typography>
 
       <Box sx={{ width: { xs: "100%", sm: "80%", md: "60%"}}} marginX={"auto"}>
@@ -82,7 +82,7 @@ const FaqSection = () => {
         ))}
       </Box>
 
-       <Box mt={10} p={{xs: 2, md: 3}} bgcolor="#EFEDEB" borderRadius={3}>
+       <Box id='about' mt={10} p={{xs: 2, md: 3}} bgcolor="#EFEDEB" borderRadius={3}>
       <Box
         display="flex"
         flexDirection={{ xs: 'column', md: 'row' }}

@@ -2,29 +2,24 @@ import React from "react";
 import { Avatar, Box, Card, CardContent, Divider, Grid, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import api from "../lib/apiClient";
+import { useAuth } from '../lib/AuthContext.jsx';
 
 export default function Profile() {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["me"],
-    queryFn: async () => {
-      const res = await api.get("/api/me");
-      return res.data;
-    },
-  });
+  const { user, logout } = useAuth();
 
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError) return <Typography color="error">Failed to load profile.</Typography>;
+  if (!user) return <Typography textAlign={'center'} fontSize={20} display={'flex'} justifyContent={'center'} alignItems={'center'}  minHeight={'70vh'}>Loading...</Typography>;
+  // if (isError) return <Typography textAlign={'center'}  fontSize={20} my={20} color="#e70000">Failed to load profile.</Typography>;
 
-  const user = data?.user || {};
-  const name = user.name || user.fullName || "User";
-  const email = user.email || "";
+ 
+  const name = user.name;
+  const email = user.email;
 
   return (
-    <Box>
-      <Typography variant="h5" fontWeight={700} mb={2}>
+    <Box maxWidth={"md"} mx={'auto'} my={{xs: 5, md:  10}}>
+      <Typography variant="h5" fontWeight={700} textAlign={"center"} mb={2}>
         Profile
       </Typography>
-      <Card sx={{ borderRadius: 2 }}>
+      <Card sx={{ borderRadius: 2, border: 1, borderColor: 'text.secondary' }}>
         <CardContent>
           <Grid container spacing={2} alignItems="center">
             <Grid item>

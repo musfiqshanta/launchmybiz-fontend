@@ -1,19 +1,16 @@
  import React from 'react';
-// import {
-//   Box,
-//   IconButton,
-//   Menu,
-//   MenuItem,
-//   useMediaQuery
-// } from '@mui/material';
-import { Box, Button, IconButton, Menu, MenuItem, Typography, useMediaQuery } from "@mui/material";
+import { Avatar, Box, Button, IconButton, Menu, MenuItem, Typography, useMediaQuery } from "@mui/material";
 import { FiMenu } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../lib/AuthContext.jsx';
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
    const isMobile = useMediaQuery('(max-width:900px)');
    const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  console.log(user);
+  
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -33,17 +30,51 @@ const Navbar = () => {
 
 
   const handleMenuItemClick = (url) => {
-    if (url === '/signin') {
+    if (url === '/#services') {
       // If already on homepage, scroll to footer
     
-        const footer = document.getElementById('footer-contact');
-        if (footer) {
-          footer.scrollIntoView({ behavior: 'smooth' });
+        const services = document.getElementById('services');
+        if (services) {
+          services.scrollIntoView({ behavior: 'smooth' });
+        }
+      
+      handleMenuClose();
+      return;
+    } 
+    if (url === '/#faqs') {
+      // If already on homepage, scroll to footer
+    
+        const faq = document.getElementById('faq');
+        if (faq) {
+          faq.scrollIntoView({ behavior: 'smooth' });
         }
       
       handleMenuClose();
       return;
     }
+    if (url === '/#pricing') {
+      // If already on homepage, scroll to footer
+    
+        const pricing = document.getElementById('pricing');
+        if (pricing) {
+          pricing.scrollIntoView({ behavior: 'smooth' });
+        }
+      
+      handleMenuClose();
+      return;
+    }
+    if (url === '/#about') {
+      // If already on homepage, scroll to footer
+    
+        const about = document.getElementById('about');
+        if (about) {
+          about.scrollIntoView({ behavior: 'smooth' });
+        }
+      
+      handleMenuClose();
+      return;
+    }
+   
     window.location.href = url;
     handleMenuClose();
   };
@@ -98,21 +129,27 @@ const Navbar = () => {
                 {item.label}
               </MenuItem>
             ))}
-            <MenuItem onClick={() => handleMenuItemClick("/signin")}>
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: '#e70000',
-                  borderRadius: '25px',
-                  textTransform: 'none',
-                  color: '#fff',
-                  px: 3,
-                  '&:hover': { bgcolor: '#c80000' }
-                }}
-              >
-                Sign in
-              </Button>
-            </MenuItem>
+            {!user ? (
+              <MenuItem onClick={() => handleMenuItemClick("/signin")}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    bgcolor: '#e70000',
+                    borderRadius: '25px',
+                    textTransform: 'none',
+                    color: '#fff',
+                    px: 3,
+                    '&:hover': { bgcolor: '#c80000' }
+                  }}
+                >
+                  Sign in
+                </Button>
+              </MenuItem>
+            ) : (
+              <MenuItem onClick={() => { logout(); handleMenuClose(); navigate('/'); }}>
+                Logout
+              </MenuItem>
+            )}
           </Menu>
         </>
       ) : ""}
@@ -129,24 +166,51 @@ const Navbar = () => {
             </Typography>
           ))} 
            </Box>
-          <Button
-            variant="contained"
-           onClick={() => navigate("/signin")}
-
-            sx={{
-              bgcolor: '#e70000',
-              borderRadius: '25px',
-              textTransform: 'none',
-              color: '#fff',
-              px: 3,
-              py: 1,
-              fontWeight: 'bold',
-              '&:hover': { bgcolor: '#c80000' },
-              display: {xs: "none", md: "flex"}
-            }}
-          >
-            Sign in
-          </Button>
+          {!user ? (
+            <Button
+              variant="contained"
+              onClick={() => navigate("/signin")}
+              sx={{
+                bgcolor: '#e70000',
+                borderRadius: '25px',
+                textTransform: 'none',
+                color: '#fff',
+                px: 3,
+                py: 1,
+                fontWeight: 'bold',
+                '&:hover': { bgcolor: '#c80000' },
+                display: {xs: "none", md: "flex"}
+              }}
+            >
+              Sign in
+            </Button>
+          ) : (
+            <Box display={{ xs: 'none', md: 'flex' }} alignItems="center" gap={2}>
+              <Avatar
+                src={user?.image || user?.avatarUrl || user?.photoURL || '/image.png'}
+                alt={user?.name || user?.email || 'User'}
+                sx={{ width: 32, height: 32, cursor: 'pointer' }}
+                onClick={() => navigate('/user/dashboard')}
+              />
+              <Button
+                variant="outlined"
+                onClick={() => { logout(); navigate('/'); }}
+                sx={{
+                  bgcolor: '#e70000',
+                  borderRadius: '25px',
+                  textTransform: 'none',
+                  color: '#fff',
+                  px: 3,
+                  py: 1,
+                  fontWeight: 'bold',
+                  '&:hover': { bgcolor: '#c80000' },
+                  display: {xs: "none", md: "flex"}
+                }}
+              >
+                Logout
+              </Button>
+            </Box>
+          )}
        
       
     </Box>

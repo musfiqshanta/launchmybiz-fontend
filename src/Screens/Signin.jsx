@@ -7,6 +7,8 @@ import * as Yup from "yup";
 import image1 from "../assets/Mobile login-bro.png"; // Your image
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../lib/AuthContext.jsx";
+import { toast } from "react-toastify";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Required"),
@@ -15,6 +17,7 @@ const LoginSchema = Yup.object().shape({
 
 export default function SignInPage() {
      const navigate = useNavigate();
+     const { login } = useAuth();
   return (
     <Box
       sx={{
@@ -23,7 +26,7 @@ export default function SignInPage() {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#f5f8fa",
-        px: 3
+        px: 1.5
       }}
     >
       <Box
@@ -62,30 +65,41 @@ export default function SignInPage() {
         <Box
           sx={{
             flex: 1,
-            p: 4,
+            py: 4,
+            px: {xs:2,md:4},
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
           }}
         >
-          <Typography variant="h5" fontWeight="bold" mb={3}>
+          <Typography variant="h5" textAlign={{xs: 'center'}} fontWeight="bold" mb={3}>
             Welcome!
           </Typography>
 
           <Formik
             initialValues={{ email: "", password: "", remember: false }}
-            validationSchema={LoginSchema}
+             validationSchema={LoginSchema}
              onSubmit={async (values, { setSubmitting }) => {
                  try {
-                   const { data } = await axios.post(
-                     "http://localhost:5000/api/login",
-                     values
-                   );
-                   console.log("Login success:", data);
-                   navigate("/user/dashboard");
-                   localStorage.setItem("token", data.token);
+                   const result = await login(values);
+                   if (result.success) {
+                     toast.success("Login successful");
+                     
+                     // Check if there's a redirect destination stored
+                     const redirectPath = localStorage.getItem('redirectAfterLogin');
+                     if (redirectPath) {
+                       // Clear the redirect path and navigate to it
+                       localStorage.removeItem('redirectAfterLogin');
+                       navigate(redirectPath);
+                     } else {
+                       // Default redirect to dashboard
+                       navigate("/user/dashboard");
+                     }
+                   } else {
+                     toast.error(result.error?.response?.data?.message || "Login failed");
+                   }
                  } catch (error) {
-                   alert("Login failed:", error.response?.data || error.message);
+                   toast.error(error?.response?.data?.message || error.message || "Login failed");
                  } finally {
                    setSubmitting(false);
                  }
@@ -121,7 +135,8 @@ export default function SignInPage() {
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: { xs: 'flex-start', md:"center"},
+                    flexDirection: { xs: "column", md: "row"}
                   }}
                 >
                   <FormControlLabel

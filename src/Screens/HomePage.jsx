@@ -1,11 +1,6 @@
-//import { useState } from 'react'
 import { Helmet } from 'react-helmet'
 import LLCForm from "../components/LLCFormation.jsx";
-import LLCIncluded from '../components/LLCIncluded.jsx'
-import TestimonialCarousel from '../components/TestimonialCarousel.jsx'
-import LLCFeaturesSection from '../components/LLCFeatures.jsx'
 import Footer from '../components/Footer.jsx'
-import ThreeStepSection from '../components/ThreeStepSection.jsx'
 import {Box} from '@mui/material'
 import ServicesSection from '../components/ServiceSection.jsx';
 import FoundersAndPackages from '../components/FounderSection.jsx';
@@ -13,7 +8,7 @@ import FAQSection from '../components/FaqSection.jsx';
 import WhyUsSection from '../components/WhyUsSection.jsx';
 
 function HomePage() {
- // const [count, setCount] = useState(0)
+ 
 
   return (
     <>
@@ -32,10 +27,7 @@ function HomePage() {
         <WhyUsSection></WhyUsSection>
         <FoundersAndPackages></FoundersAndPackages>
         <FAQSection></FAQSection>
-        {/* <LLCIncluded/>
-        <TestimonialCarousel/>
-         <LLCFeaturesSection/>
-        <ThreeStepSection/> */}
+        
         <Footer/>
       </Box>
     </>
