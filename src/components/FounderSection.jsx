@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Typography,
@@ -20,6 +20,7 @@ import 'swiper/css/pagination';
 import { red } from '@mui/material/colors';
 import founder from '../assets/Rectangle 746.png'; 
 import click from '../assets/Frame 144.png'; // Replace with actual path to red tick icon
+import CustomPlanModal from './CustomPlanModal';
 
 const founders = [
   {
@@ -71,6 +72,16 @@ const packages = [
 ];
 
 export default function FoundersAndPackages() {
+  const [isCustomPlanModalOpen, setIsCustomPlanModalOpen] = useState(false);
+
+  const handleCustomPlanClick = () => {
+    setIsCustomPlanModalOpen(true);
+  };
+
+  const handleCloseCustomPlanModal = () => {
+    setIsCustomPlanModalOpen(false);
+  };
+
   return (
     <div style={{ paddingTop: 60, paddingBottom: 60, backgroundColor: "#EFEDEB", marginBottom: 40, marginTop: 40 }}>
     <Container maxWidth="lg"  >
@@ -123,7 +134,7 @@ export default function FoundersAndPackages() {
     >
       {founders.map((founder, index) => (
         <SwiperSlide key={index} >
-          <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} alignItems="center" justifyContent="center" gap={4} sx={{ backgroundColor: '#fff', borderRadius: 3,p: 2, boxShadow: 3 }}>
+          <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} alignItems="center" justifyContent="center" gap={4} sx={{ backgroundColor: '#fff', borderRadius: 3,p: 2, }}>
             <Box
               component="img"
               src={founder.image}
@@ -251,6 +262,7 @@ export default function FoundersAndPackages() {
               variant="outlined"
               color="error"
               fullWidth
+              onClick={pkg.title === 'Custom' ? handleCustomPlanClick : undefined}
               sx={{
                 fontWeight: '400',
                 borderRadius: 2,
@@ -258,7 +270,6 @@ export default function FoundersAndPackages() {
                 py: 1,
                 fontSize: {xs: "18px", md:"20px"}
               }}
-              
             >
               {pkg.cta}
             </Button>
@@ -295,6 +306,12 @@ export default function FoundersAndPackages() {
 
       </Box>
     </Container>
+    
+    {/* Custom Plan Modal */}
+    <CustomPlanModal 
+      open={isCustomPlanModalOpen} 
+      onClose={handleCloseCustomPlanModal} 
+    />
     </div>
   );
 }

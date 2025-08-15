@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -10,84 +10,109 @@ import {
   Paper,
   Grid,
   Container,
-  Link
+  Link,
+  CircularProgress
 } from '@mui/material';
 import { FaRocket, FaRegBuilding, FaFingerprint, FaShieldAlt, FaBullhorn } from 'react-icons/fa';
 import Navbar from './Navbar';
 import bannerbackground from '../assets/Untitled-1 1.png';
 import bannerimage from '../assets/Object 1.png';
 import trustpilot from '../assets/image 14.png';
+import api from '../lib/apiClient';
+
+const usStatesWithPrices = [
+  { name: "Alabama", label: "Alabama-Standard $587.40" },
+  { name: "Alaska", label: "Alaska-Standard $624.80" },
+  { name: "Arizona", label: "Arizona-Standard $421.30" },
+  { name: "Arkansas", label: "Arkansas-Standard $382.80" },
+  { name: "California", label: "California-Standard $410.30" },
+  { name: "Colorado", label: "Colorado-Standard $382.80" },
+  { name: "Connecticut", label: "Connecticut-Standard $459.80" },
+  { name: "Delaware", label: "Delaware-Standard $564.30" },
+  { name: "Florida", label: "Florida-Standard $498.30" },
+  { name: "Georgia", label: "Georgia-Standard $437.80" },
+  { name: "Hawaii", label: "Hawaii-Standard $405.90" },
+  { name: "Idaho", label: "Idaho-Standard $443.30" },
+  { name: "Illinois", label: "Illinois-Standard $503.80" },
+  { name: "Indiana", label: "Indiana-Standard $437.80" },
+  { name: "Iowa", label: "Iowa-Standard $382.80" },
+  { name: "Kansas", label: "Kansas-Standard $510.40" },
+  { name: "Kentucky", label: "Kentucky-Standard $388.30" },
+  { name: "Louisiana", label: "Louisiana-Standard $464.20" },
+  { name: "Maine", label: "Maine-Standard $520.30" },
+  { name: "Maryland", label: "Maryland-Standard $544.50" },
+  { name: "Massachusetts", label: "Massachusetts-Standard $899.80" },
+  { name: "Michigan", label: "Michigan-Standard $382.80" },
+  { name: "Minnesota", label: "Minnesota-Standard $503.80" },
+  { name: "Mississippi", label: "Mississippi-Standard $388.30" },
+  { name: "Missouri", label: "Missouri-Standard $385.00" },
+  { name: "Montana", label: "Montana-Standard $371.80" },
+  { name: "Nebraska", label: "Nebraska-Standard $664.40" },
+  { name: "Nevada", label: "Nevada-Standard $807.40" },
+  { name: "New Hampshire", label: "New Hampshire-Standard $440.00" },
+  { name: "New Jersey", label: "New Jersey-Standard $469.15" },
+  { name: "New Mexico", label: "New Mexico-Standard $385.00" },
+  { name: "New York", label: "New York-Standard $1026.30" },
+  { name: "North Carolina", label: "North Carolina-Standard $468.60" },
+  { name: "North Dakota", label: "North Dakota-Standard $476.30" },
+  { name: "Ohio", label: "Ohio-Standard $436.70" },
+  { name: "Oklahoma", label: "Oklahoma-Standard $448.80" },
+  { name: "Oregon", label: "Oregon-Standard $437.80" },
+  { name: "Pennsylvania", label: "Pennsylvania-Standard $465.30" },
+  { name: "Rhode Island", label: "Rhode Island-Standard $499.40" },
+  { name: "South Carolina", label: "South Carolina-Standard $488.40" },
+  { name: "South Dakota", label: "South Dakota-Standard $492.80" },
+  { name: "Tennessee", label: "Tennessee-Standard $685.30" },
+  { name: "Texas", label: "Texas-Standard $668.80" },
+  { name: "Utah", label: "Utah-Standard $392.70" },
+  { name: "Vermont", label: "Vermont-Standard $465.30" },
+  { name: "Virginia", label: "Virginia-Standard $442.20" },
+  { name: "Washington", label: "Washington-Standard $547.80" },
+  { name: "West Virginia", label: "West Virginia-Standard $471.90" },
+  { name: "Wisconsin", label: "Wisconsin-Standard $470.80" },
+  { name: "Wyoming", label: "Wyoming-Standard $442.20" },
+];
 
 
 const LLCForm = () => {
-  
-  
+  const [selectedState, setSelectedState] = useState("");
+  const [packageText, setPackageText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = async (event) => {
+    const stateName = event.target.value;
+    setSelectedState(stateName);
+    setIsLoading(true);
+    setPackageText(""); // Clear previous package text while loading
+
+    try {
+      const params = {
+        entityType: "LLC",
+        state: stateName,
+        filing: "Standard",
+      };
+
+      const response = await api.get("/api/business-formation-package", { params });
+
+      const completePackage = response.data.data.packages.find(pkg => pkg.name === "Complete");
+
+      if (completePackage) {
+        // remove $ and convert to number
+        const priceNumber = Number(completePackage.totalPrice.replace(/[^0-9.-]+/g,""));
+        const calculatedFee = (priceNumber + priceNumber  * 0.03).toFixed(2);
+
+        setPackageText(`${stateName} - $${calculatedFee}`);
+      }
+
+    } catch (error) {
+      console.error("API Error:", error);
+      setPackageText(""); // Clear package text on error
+    } finally {
+      setIsLoading(false);
+    }
+  };
  
-  // const usStatesWithPrices = [
-  //   { name: "Alabama", label: "Alabama-Standard $587.40" },
-  //   { name: "Alaska", label: "Alaska-Standard $624.80" },
-  //   { name: "Arizona", label: "Arizona-Standard $421.30" },
-  //   { name: "Arkansas", label: "Arkansas-Standard $382.80" },
-  //   { name: "California", label: "California-Standard $410.30" },
-  //   { name: "Colorado", label: "Colorado-Standard $382.80" },
-  //   { name: "Connecticut", label: "Connecticut-Standard $459.80" },
-  //   { name: "Delaware", label: "Delaware-Standard $564.30" },
-  //   { name: "Florida", label: "Florida-Standard $498.30" },
-  //   { name: "Georgia", label: "Georgia-Standard $437.80" },
-  //   { name: "Hawaii", label: "Hawaii-Standard $405.90" },
-  //   { name: "Idaho", label: "Idaho-Standard $443.30" },
-  //   { name: "Illinois", label: "Illinois-Standard $503.80" },
-  //   { name: "Indiana", label: "Indiana-Standard $437.80" },
-  //   { name: "Iowa", label: "Iowa-Standard $382.80" },
-  //   { name: "Kansas", label: "Kansas-Standard $510.40" },
-  //   { name: "Kentucky", label: "Kentucky-Standard $388.30" },
-  //   { name: "Louisiana", label: "Louisiana-Standard $464.20" },
-  //   { name: "Maine", label: "Maine-Standard $520.30" },
-  //   { name: "Maryland", label: "Maryland-Standard $544.50" },
-  //   { name: "Massachusetts", label: "Massachusetts-Standard $899.80" },
-  //   { name: "Michigan", label: "Michigan-Standard $382.80" },
-  //   { name: "Minnesota", label: "Minnesota-Standard $503.80" },
-  //   { name: "Mississippi", label: "Mississippi-Standard $388.30" },
-  //   { name: "Missouri", label: "Missouri-Standard $385.00" },
-  //   { name: "Montana", label: "Montana-Standard $371.80" },
-  //   { name: "Nebraska", label: "Nebraska-Standard $664.40" },
-  //   { name: "Nevada", label: "Nevada-Standard $807.40" },
-  //   { name: "New Hampshire", label: "New Hampshire-Standard $440.00" },
-  //   { name: "New Jersey", label: "New Jersey-Standard $469.15" },
-  //   { name: "New Mexico", label: "New Mexico-Standard $385.00" },
-  //   { name: "New York", label: "New York-Standard $1026.30" },
-  //   { name: "North Carolina", label: "North Carolina-Standard $468.60" },
-  //   { name: "North Dakota", label: "North Dakota-Standard $476.30" },
-  //   { name: "Ohio", label: "Ohio-Standard $436.70" },
-  //   { name: "Oklahoma", label: "Oklahoma-Standard $448.80" },
-  //   { name: "Oregon", label: "Oregon-Standard $437.80" },
-  //   { name: "Pennsylvania", label: "Pennsylvania-Standard $465.30" },
-  //   { name: "Rhode Island", label: "Rhode Island-Standard $499.40" },
-  //   { name: "South Carolina", label: "South Carolina-Standard $488.40" },
-  //   { name: "South Dakota", label: "South Dakota-Standard $492.80" },
-  //   { name: "Tennessee", label: "Tennessee-Standard $685.30" },
-  //   { name: "Texas", label: "Texas-Standard $668.80" },
-  //   { name: "Utah", label: "Utah-Standard $392.70" },
-  //   { name: "Vermont", label: "Vermont-Standard $465.30" },
-  //   { name: "Virginia", label: "Virginia-Standard $442.20" },
-  //   { name: "Washington", label: "Washington-Standard $547.80" },
-  //   { name: "West Virginia", label: "West Virginia-Standard $471.90" },
-  //   { name: "Wisconsin", label: "Wisconsin-Standard $470.80" },
-  //   { name: "Wyoming", label: "Wyoming-Standard $442.20" },
-  // ];
   
-  // const usStates = [
-  //   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
-  //   "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
-  //   "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
-  //   "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
-  //   "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
-  //   "New Hampshire", "New Jersey", "New Mexico", "New York",
-  //   "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
-  //   "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-  //   "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
-  //   "West Virginia", "Wisconsin", "Wyoming"
-  // ];
   
    const features = [
   { icon:  (
@@ -230,12 +255,30 @@ const LLCForm = () => {
             </Box>
           ))}
         </Box>
+      <Box
+          display="flex" flexDirection={'column'}>
+        <FormControl sx={{ mb: 2, width: "300px", backgroundColor: "#fff", boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.1)" }}>
+      <InputLabel>Choose your LLC State</InputLabel>
+      <Select 
+        value={selectedState} 
+        label="Choose your LLC State" 
+        onChange={handleChange}
+        disabled={isLoading}
+      >
+        {usStatesWithPrices.map((stateObj) => (
+          <MenuItem key={stateObj.name} value={stateObj.name}>
+            {stateObj.name === selectedState && packageText ? packageText : stateObj.name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
          
-         <Link href="/business-form" >
+         <Link href={packageText ? "/business-form" : '/'} style={{ textDecoration: 'none' }}>
         <Button
           variant="contained"
+          disabled={isLoading}
           sx={{
-            backgroundColor: '#e70000',
+            backgroundColor: isLoading ? '#cccccc' : '#e70000',
             borderRadius: '50px',
             textTransform: 'none',
             fontWeight: 'bold',
@@ -243,13 +286,27 @@ const LLCForm = () => {
             py: { xs: 1, md: 1.5 },
             fontSize: { xs: 12, md: 18 },
             '&:hover': {
-              backgroundColor: '#c50000',
+              backgroundColor: isLoading ? '#cccccc' : '#c50000',
             },
+            '&:disabled': {
+              backgroundColor: '#cccccc',
+              color: '#666666'
+            }
           }}
         >
-          Get Started <FaRocket style={{ marginLeft: 8 }} />
+          {isLoading ? (
+            <>
+              <CircularProgress size={16} sx={{ color: '#666666', mr: 1 }} />
+              Loading...
+            </>
+          ) : (
+            <>
+              Get Started <FaRocket style={{ marginLeft: 8 }} />
+            </>
+          )}
         </Button> 
         </Link>
+        </Box>
       </Box>
 
       {/* RIGHT SECTION */}

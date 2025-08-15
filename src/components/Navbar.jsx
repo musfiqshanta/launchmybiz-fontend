@@ -9,7 +9,7 @@ const Navbar = () => {
    const isMobile = useMediaQuery('(max-width:900px)');
    const navigate = useNavigate();
   const { user, logout } = useAuth();
-  console.log(user);
+ 
   
 
   const handleMenuClick = (event) => {

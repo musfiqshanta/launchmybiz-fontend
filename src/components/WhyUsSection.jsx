@@ -104,7 +104,7 @@ export default function WhyUsSection() {
               component="img"
               src={us1}
               alt='us1'
-              sx={{ width: { xs: '90%', md: 400 }, height: { xs: '60%', md: 260 }, borderRadius: 2, boxShadow: 2 }}
+              sx={{ width: { xs: '90%', md: 400 }, height: { xs: '60%', md: 260 }, borderRadius: 2,  }}
             />
 
             <Box width={{xs: '90%', md: "410px"}}>
@@ -127,7 +127,7 @@ export default function WhyUsSection() {
               component="img"
               src={us2}
               alt='us1'
-              sx={{ width: { xs: '90%', md: 400 }, height: { xs: '60%', md: 260 }, borderRadius: 2, boxShadow: 2 }}
+              sx={{ width: { xs: '90%', md: 400 }, height: { xs: '60%', md: 260 }, borderRadius: 2,  }}
             />
 
             <Box width={{xs: '90%', md: "410px"}}>
@@ -150,7 +150,7 @@ export default function WhyUsSection() {
               component="img"
               src={us3}
               alt='us1'
-              sx={{ width: { xs: '90%', md: 400 }, height: { xs: '60%', md: 260 }, borderRadius: 2, boxShadow: 2 }}
+              sx={{ width: { xs: '90%', md: 400 }, height: { xs: '60%', md: 260 }, borderRadius: 2,  }}
             />
 
             <Box width={{xs: '90%', md: "410px"}}>
@@ -173,7 +173,7 @@ export default function WhyUsSection() {
               component="img"
               src={us4}
               alt='us1'
-              sx={{ width: { xs: '90%', md: 400 }, height: { xs: '60%', md: 260 }, borderRadius: 2, boxShadow: 2 }}
+              sx={{ width: { xs: '90%', md: 400 }, height: { xs: '60%', md: 260 }, borderRadius: 2,  }}
             />
 
             <Box width={{xs: '90%', md: "410px"}}>

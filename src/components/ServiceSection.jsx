@@ -114,7 +114,7 @@ const ServicesSection = () => {
           boxShadow: 6,
           borderRadius: 3,
           marginLeft: {xs: 0, md: 50},
-          marginTop: {xs: 0, md: -10},
+          marginTop: {xs: 0, md: -18},
           rotate: { xs: "-5deg", md: '-10deg'}
         }}
       >
@@ -180,9 +180,9 @@ const ServicesSection = () => {
           zIndex: 20,
           boxShadow: 6,
           borderRadius: 3,
-          marginTop: {xs: 0, md: -10},
+          marginTop: {xs: 0, md: -2},
           marginRight: {xs: 0, md: 40},
-          rotate: { xs: "5deg", md: '10deg'}
+          rotate: { xs: "5deg", md: '12deg'}
         }}
       >
         <CardContent>

@@ -9,8 +9,6 @@ import {
 } from '@mui/material';
 import { Formik, Form, FieldArray } from 'formik';
 import { loadStripe } from '@stripe/stripe-js';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
 
 import api from '../lib/apiClient';
 import PackageSelectionForm from './PackageSelectionForm';
@@ -21,25 +19,19 @@ import useFormPersistence from '../hooks/useFormPersistence';
 import BusinessFormTabs from './forms/BusinessFormTabs';
 import CompanyInformationTab from './forms/CompanyInformationTab';
 import ContactInformationTab from './forms/ContactInformationTab';
-import BusinessAddressTab from './forms/BusinessAddressTab';
-import ParticipantsTab from './forms/ParticipantsTab';
-import OtherInformationTab from './forms/OtherInformationTab';
 
 // Import utilities
 import { validationSchema } from '../utils/formValidation';
 import { isCurrentTabComplete, getTabFields, transformFormData, getInitialValues } from '../utils/formHelpers';
-import { toast } from 'react-toastify';
-
+import { textFieldStyles, formLabelStyles, states, countries } from '../utils/formConstants';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-const BusinessForm = () => {
+const BusinessFormModular = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [completedTabs, setCompletedTabs] = useState([]);
     const navigate = useNavigate();
     const { user } = useAuth();
-   // console.log(user);
-    
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showLoginSuccess, setShowLoginSuccess] = useState(false);
     
@@ -61,7 +53,7 @@ const BusinessForm = () => {
     const [packageData, setPackageData] = useState(null);
     const [businessFormValues, setBusinessFormValues] = useState(null);
     const [finalData, setFinalData] = useState(null);
-    const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
+
     // Check authentication status on component mount
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -75,8 +67,9 @@ const BusinessForm = () => {
             if (savedFormValues?.activeTab !== undefined) {
                 setActiveTab(savedFormValues.activeTab);
             }
-            // Don't restore completedTabs from localStorage to ensure proper tab progression
-            // setCompletedTabs(savedFormValues.completedTabs);
+            if (savedFormValues?.completedTabs !== undefined) {
+                setCompletedTabs(savedFormValues.completedTabs);
+            }
             
             // Check if we're returning from login by looking for a recent timestamp
             const wasRecentlySaved = isDataRecent(1); // Within 1 minute
@@ -88,8 +81,6 @@ const BusinessForm = () => {
         }
     }, [hasSavedData, isFormLoading, savedFormValues, isDataRecent]);
 
-
-
     // Add another useEffect to restore form data when authentication changes
     useEffect(() => {
         if (isAuthenticated && hasSavedData && !isFormLoading) {
@@ -97,10 +88,9 @@ const BusinessForm = () => {
             if (savedFormValues?.activeTab !== undefined) {
                 setActiveTab(savedFormValues.activeTab);
             }
-            // Don't restore completedTabs from localStorage to ensure proper tab progression
-            // if (savedFormValues?.completedTabs !== undefined) {
-            //     setCompletedTabs(savedFormValues.completedTabs);
-            // }
+            if (savedFormValues?.completedTabs !== undefined) {
+                setCompletedTabs(savedFormValues.completedTabs);
+            }
             
             // Check if we're returning from login by looking for a recent timestamp
             const wasRecentlySaved = isDataRecent(1); // Within 1 minute
@@ -160,9 +150,9 @@ const BusinessForm = () => {
         };
         
         // If user is logged in, always use their email
-        // if (user?.email) {
-        //     merged.email = user.email;
-        // }
+        if (user?.email) {
+            merged.email = user.email;
+        }
         
         return merged;
     }, [initialValues, cleanFormData, user?.email]);
@@ -190,7 +180,7 @@ const BusinessForm = () => {
             
             // Make the API call to your backend using the API client
             const response = await api.get('/api/business-formation-package', { params });
-            console.log('response', response.data.data);
+            
             // Store the package data and business form values, then show package selection form
             setPackageData(response.data.data);
             setBusinessFormValues(transformedData);
@@ -223,34 +213,26 @@ const BusinessForm = () => {
             
             // Calculate total price similar to getTotalPrice function
             const completePrice = Number(packageInfo.totalPrice.replace(/[^0-9.-]+/g, ""));
-            // const totalPrice = (completePrice + completePrice*0.33 + (selectedPlan.extraCharge || 0)).toFixed(2);
-            const totalPrice = Math.round(
-                completePrice + completePrice * 0.33 + (selectedPlan.extraCharge || 0)
-            ).toString();
+            const totalPrice = (completePrice + (selectedPlan.extraCharge || 0)).toFixed(2);
+            
             // Create final transformed data that includes both business form data and selected package
             const finalTransformedData = {
                 ...businessFormValues,
                 orderTotalPrice: `$${totalPrice}`,
-                userID : user?.id,
                 SelectedPackage: {
-                    package: {
-                        ...packageInfo,
-                        
-                    },
                     SelectedPlan: {
-                        ...selectedPlan
+                        ...packageInfo,
+                        selectedPlan
                     }
                 }
             };
             
             console.log('Final transformed data with package:', finalTransformedData);
             setFinalData(finalTransformedData);
-            
-            // Call handlePayment directly with the latest data
-            handlePayment(finalTransformedData);
+            console.log(finalData);
             
             // For now, just show a success message
-         //   alert(`Package "${packageInfo.name}" selected successfully! Total: $${totalPrice}`);
+            alert(`Package "${packageInfo.name}" selected successfully! Total: $${totalPrice}`);
             
         } catch (error) {
             console.error('Error saving package selection:', error);
@@ -269,55 +251,28 @@ const BusinessForm = () => {
         }
     };
 
-    
-
-    const handlePayment = async (paymentData = null) => {
-        // Prevent multiple simultaneous payment calls
-        if (isPaymentProcessing) {
-            console.log('Payment already in progress, skipping duplicate call');
-            return;
-        }
-
-        setIsPaymentProcessing(true);
+    const handlePayment = async () => {
         try {
-            // Use the passed data or fall back to finalData state
-            const dataToSend = paymentData;
-            console.log('Payment data to send:', dataToSend);
-            
+            console.log('Final data:', finalData);
             // Send the full data to backend
             const res = await fetch("http://localhost:5001/api/create-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ payload: dataToSend}),
+                body: JSON.stringify({ payload: finalData}),
             });
-
-            if (res.ok) {
-                const data = await res.json();
-                toast.success("Order created successfully!");
-                navigate("/user/dashboard/orders"); 
-                clearSavedFormData();
-                //console.log("Created order ID:", data.orderId);
-              } 
     
-            // const { id: sessionId } = await res.json();
+            const { id: sessionId } = await res.json();
     
-            // // Step 2: Redirect to Stripe Checkout
-            // const stripe = await stripePromise;
-            // await stripe.redirectToCheckout({ sessionId });
+            // Step 2: Redirect to Stripe Checkout
+            const stripe = await stripePromise;
+            await stripe.redirectToCheckout({ sessionId });
         } catch (err) {
             console.error("Payment error:", err);
-            toast.error("Payment failed. Please try again.");
-        } finally {
-            setIsPaymentProcessing(false);
+            alert("Payment failed. Please try again.");
         }
     };
 
     const handleNext = (errors, values, touched, setTouched) => {
-        console.log('handleNext called with activeTab:', activeTab);
-        console.log('Current values:', values);
-        console.log('Current errors:', errors);
-        console.log('isCurrentTabComplete result:', isCurrentTabComplete(activeTab, values));
-        
         // Clear any error messages when navigating
         setSubmitError('');
         
@@ -352,25 +307,17 @@ const BusinessForm = () => {
             return errors[field];
         });
 
-        console.log('hasErrors:', hasErrors);
-        console.log('isCurrentTabComplete:', isCurrentTabComplete(activeTab, values));
-
         if (!hasErrors && isCurrentTabComplete(activeTab, values)) {
-            console.log('Moving to next tab');
             // persist values before moving
             saveFormDataToStorage(values);
             if (!completedTabs.includes(activeTab)) {
                 setCompletedTabs([...completedTabs, activeTab]);
             }
             setActiveTab(activeTab + 1);
-        } else {
-            console.log('Cannot move to next tab - errors or incomplete');
         }
     };
 
     const handleBack = (values) => {
-        console.log('handleBack called with activeTab:', activeTab);
-        
         // Clear any error messages when navigating
         setSubmitError('');
         
@@ -392,7 +339,6 @@ const BusinessForm = () => {
     }
 
     return (
-        <>
         <Box sx={{ 
             display: 'flex', 
             justifyContent: 'center', 
@@ -481,43 +427,29 @@ const BusinessForm = () => {
                                 />
                             )}
                             
+                            {/* TODO: Add other tab components */}
                             {activeTab === 2 && (
-                                <BusinessAddressTab 
-                                    values={values}
-                                    errors={errors}
-                                    touched={touched}
-                                    handleChange={handleChange}
-                                    handleBlur={handleBlur}
-                                />
+                                <Box>
+                                    <Typography variant="h6">Business Address Tab - To be implemented</Typography>
+                                </Box>
                             )}
                             
                             {activeTab === 3 && (
-                                <ParticipantsTab 
-                                    values={values}
-                                    errors={errors}
-                                    touched={touched}
-                                    handleChange={handleChange}
-                                    handleBlur={handleBlur}
-                                />
+                                <Box>
+                                    <Typography variant="h6">Participants Tab - To be implemented</Typography>
+                                </Box>
                             )}
                             
                             {activeTab === 4 && (
-                                <OtherInformationTab 
-                                    values={values}
-                                    errors={errors}
-                                    touched={touched}
-                                    handleChange={handleChange}
-                                    handleBlur={handleBlur}
-                                />
+                                <Box>
+                                    <Typography variant="h6">Other Information Tab - To be implemented</Typography>
+                                </Box>
                             )}
 
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 4 }}>
                                 <Button 
                                     variant="outlined" 
-                                    onClick={() => {
-                                        console.log('Back button clicked - moving from tab', activeTab, 'to', activeTab - 1);
-                                        setActiveTab(activeTab - 1);
-                                    }}
+                                    onClick={() => handleBack(values)}
                                     disabled={activeTab === 0}
                                     sx={{ 
                                         textTransform: 'none',
@@ -535,14 +467,7 @@ const BusinessForm = () => {
                                 {activeTab < 4 ? (
                                     <Button 
                                         variant="contained" 
-                                        onClick={() => {
-                                            console.log('Next button clicked - moving from tab', activeTab, 'to', activeTab + 1);
-                                            // Mark current tab as completed
-                                            if (!completedTabs.includes(activeTab)) {
-                                                setCompletedTabs([...completedTabs, activeTab]);
-                                            }
-                                            setActiveTab(activeTab + 1);
-                                        }}
+                                        onClick={() => handleNext(errors, values, touched, setFieldTouched)}
                                         disabled={!isCurrentTabComplete(activeTab, values)}
                                         sx={{ 
                                             textTransform: 'none',
@@ -613,20 +538,7 @@ const BusinessForm = () => {
                 </Formik>
             </Paper>
         </Box>
-
-        {/* Payment Processing Loader */}
-        <Backdrop
-                sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1, flexDirection: "column" }}
-                open={isPaymentProcessing}
-            >
-                <CircularProgress color="inherit" />
-                <Typography variant="h6" sx={{ mt: 2 }}>
-                    Processing Payment...
-                </Typography>
-            </Backdrop>
-
-        </>
     );
 };
 
-export default BusinessForm;
+export default BusinessFormModular; 
