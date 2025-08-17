@@ -20,6 +20,7 @@ import AdminRoute from './lib/AdminRoute.jsx';
 import AdminLogin from '../src/components/AdminLoginPage.jsx'
 import AdminPanle from './components/AdminPanel.jsx';
 import BusinessForm from './Screens/BusinessForm.jsx'
+import WithoutLLCForm from './components/WithoutLLCForm.jsx'
 import SignInPage from './Screens/Signin.jsx';
 import SignupPage from './Screens/SignUp.jsx';
 import ResponsiveDashboardLayout from './Screens/DashboardLayout.jsx';
@@ -96,6 +97,15 @@ const router = createBrowserRouter(
         element={
           <Suspense fallback={<Loader />}>
             <BusinessForm />
+          </Suspense>
+        }
+      />
+
+      <Route
+        path="/business-form/without-LLC"
+        element={
+          <Suspense fallback={<Loader />}>
+            <WithoutLLCForm />
           </Suspense>
         }
       />

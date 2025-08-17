@@ -328,9 +328,9 @@ const PackageSelectionForm = ({ packageData, onPackageSelect, onCancel }) => {
             justifyContent: 'center',
             alignItems: 'center',
             minHeight: '80vh',
-            p: 4
+            p: 3
         }}>
-            <Paper elevation={3} sx={{
+            <Box elevation={3} sx={{
                 maxWidth: 1200,
                 width: '100%',
                 mx: 'auto',
@@ -339,7 +339,7 @@ const PackageSelectionForm = ({ packageData, onPackageSelect, onCancel }) => {
                 borderRadius: '16px',
                 boxShadow: '0 12px 30px -8px rgba(0,0,0,0.1)'
             }}>
-                <Typography variant="h4" align="center" gutterBottom fontWeight="700" sx={{ mb: 4, color: '#111827' }}>
+                <Typography variant="h4" align="center" gutterBottom fontWeight="500" sx={{ mb: 4, color: '#111827', fontSize: {xs: '26px', md: '32px'} }}>
                     Select Your Business Formation Package
                 </Typography>
 
@@ -472,8 +472,10 @@ const PackageSelectionForm = ({ packageData, onPackageSelect, onCancel }) => {
                             fontWeight: 600,
                             height: '50px',
                             borderRadius: '8px',
-                            fontSize: '18px',
-                            px: 4
+                            color: '#000000',
+                            borderColor: '#000000',
+                            fontSize: {xs: '14px', md: '18px'},
+                            px: {xs: 2, md: 4}
                         }}
                     >
                         Cancel
@@ -486,7 +488,8 @@ const PackageSelectionForm = ({ packageData, onPackageSelect, onCancel }) => {
                             textTransform: 'none',
                             fontWeight: 600,
                             borderRadius: '8px',
-                            px: 4,
+                            px: {xs: 2, md: 4},
+                            py: {xs: 1.5, md: 2},
                             bgcolor: '#dc2626',
                             '&:hover': { bgcolor: '#b91c1c' }
                         }}
@@ -494,7 +497,7 @@ const PackageSelectionForm = ({ packageData, onPackageSelect, onCancel }) => {
                         {isProcessing ? 'Processing...' : 'Pay Now'}
                     </Button>
                 </Box>
-            </Paper>
+            </Box>
         </Box>
     );
 };

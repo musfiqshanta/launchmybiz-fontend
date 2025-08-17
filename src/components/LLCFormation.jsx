@@ -99,7 +99,7 @@ const LLCForm = () => {
       if (completePackage) {
         // remove $ and convert to number
         const priceNumber = Number(completePackage.totalPrice.replace(/[^0-9.-]+/g,""));
-        const calculatedFee = (priceNumber + priceNumber  * 0.03).toFixed(2);
+        const calculatedFee = (priceNumber + priceNumber  * 0.33).toFixed(2);
 
         setPackageText(`${stateName} - $${calculatedFee}`);
       }
@@ -236,17 +236,13 @@ const LLCForm = () => {
                 backgroundColor: "#fff",
                 borderRadius: "999px",
                 boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.1)",
+
+                ...(index === 2 && {
+                  mr: 1.2
+                }),
               }}
             >
-              {/* <Box
-                   component="img"
-                   src={feature.icon}
-                   alt="icons"
-                   sx={{
-                     height: '18px',
-                     width:  '18px',
-                   }}
-                 /> */}
+              
 
                <Box sx={{ display: "flex", alignItems: "center" }}>  {feature.icon} </Box>
               <Typography fontSize={{ xs: 12, md: 16 }} fontWeight={500}>
@@ -257,13 +253,19 @@ const LLCForm = () => {
         </Box>
       <Box
           display="flex" flexDirection={'column'}>
-        <FormControl sx={{ mb: 2, width: "300px", backgroundColor: "#fff", boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.1)" }}>
+        <FormControl sx={{ mb: 2, color: "#e70000", width: {xs: "210px", md: "300px"}, backgroundColor: "#fff", boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.46)", border: "none", borderColor: "#ffffff", borderRadius: "10px" }}>
       <InputLabel>Choose your LLC State</InputLabel>
       <Select 
         value={selectedState} 
         label="Choose your LLC State" 
         onChange={handleChange}
         disabled={isLoading}
+        sx={{
+          border: "none",
+          borderColor: "#ffffff",
+          borderRadius: "10px",
+          "& fieldset": { border: "none" },
+        }}
       >
         {usStatesWithPrices.map((stateObj) => (
           <MenuItem key={stateObj.name} value={stateObj.name}>
@@ -284,7 +286,7 @@ const LLCForm = () => {
             fontWeight: 'bold',
             px: { xs: 2,md: 4 },
             py: { xs: 1, md: 1.5 },
-            fontSize: { xs: 12, md: 18 },
+            fontSize: { xs: 14, md: 18 },
             '&:hover': {
               backgroundColor: isLoading ? '#cccccc' : '#c50000',
             },

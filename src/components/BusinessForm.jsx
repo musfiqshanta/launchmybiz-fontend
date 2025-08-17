@@ -38,7 +38,7 @@ const BusinessForm = () => {
     const [completedTabs, setCompletedTabs] = useState([]);
     const navigate = useNavigate();
     const { user } = useAuth();
-   // console.log(user);
+   
     
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [showLoginSuccess, setShowLoginSuccess] = useState(false);
@@ -71,21 +71,21 @@ const BusinessForm = () => {
         
         // Load saved form data if returning from sign-in
         if (hasSavedData && !isFormLoading) {
-            // Set the form data back to the form
+                // Set the form data back to the form
             if (savedFormValues?.activeTab !== undefined) {
                 setActiveTab(savedFormValues.activeTab);
-            }
+                }
             // Don't restore completedTabs from localStorage to ensure proper tab progression
             // setCompletedTabs(savedFormValues.completedTabs);
-            
-            // Check if we're returning from login by looking for a recent timestamp
+                
+                // Check if we're returning from login by looking for a recent timestamp
             const wasRecentlySaved = isDataRecent(1); // Within 1 minute
-            if (wasRecentlySaved && token) {
-                // We just returned from login, show success message
-                setShowLoginSuccess(true);
+                if (wasRecentlySaved && token) {
+                    // We just returned from login, show success message
+                    setShowLoginSuccess(true);
                 setTimeout(() => setShowLoginSuccess(false), 5000);
+                }
             }
-        }
     }, [hasSavedData, isFormLoading, savedFormValues, isDataRecent]);
 
 
@@ -93,7 +93,7 @@ const BusinessForm = () => {
     // Add another useEffect to restore form data when authentication changes
     useEffect(() => {
         if (isAuthenticated && hasSavedData && !isFormLoading) {
-            // Restore form data when user is authenticated
+                    // Restore form data when user is authenticated
             if (savedFormValues?.activeTab !== undefined) {
                 setActiveTab(savedFormValues.activeTab);
             }
@@ -101,15 +101,15 @@ const BusinessForm = () => {
             // if (savedFormValues?.completedTabs !== undefined) {
             //     setCompletedTabs(savedFormValues.completedTabs);
             // }
-            
-            // Check if we're returning from login by looking for a recent timestamp
+                    
+                    // Check if we're returning from login by looking for a recent timestamp
             const wasRecentlySaved = isDataRecent(1); // Within 1 minute
-            if (wasRecentlySaved) {
-                // This means we just returned from login, show success message
-                setShowLoginSuccess(true);
-                setTimeout(() => setShowLoginSuccess(false), 5000);
-            }
-        }
+                    if (wasRecentlySaved) {
+                        // This means we just returned from login, show success message
+                        setShowLoginSuccess(true);
+                        setTimeout(() => setShowLoginSuccess(false), 5000);
+                    }
+                }
     }, [isAuthenticated, hasSavedData, isFormLoading, savedFormValues, isDataRecent]);
 
     // Save form data using the custom hook
@@ -177,7 +177,7 @@ const BusinessForm = () => {
         try {
             // Clear any previous messages
             setSubmitError('');
-
+            
             // Transform the data to match the required backend format
             const transformedData = transformFormData(values);
             
@@ -190,7 +190,7 @@ const BusinessForm = () => {
             
             // Make the API call to your backend using the API client
             const response = await api.get('/api/business-formation-package', { params });
-            console.log('response', response.data.data);
+           
             // Store the package data and business form values, then show package selection form
             setPackageData(response.data.data);
             setBusinessFormValues(transformedData);
@@ -215,8 +215,8 @@ const BusinessForm = () => {
 
     const handlePackageSelect = async (packageData) => {
         try {
-            console.log('Package selection handler called with:', packageData);
-            console.log('Business form data:', businessFormValues);
+            // console.log('Package selection handler called with:', packageData);
+            // console.log('Business form data:', businessFormValues);
             
             // Extract packageInfo and selectedPlan from the received data
             const { selectedPlan, ...packageInfo } = packageData;
@@ -243,7 +243,7 @@ const BusinessForm = () => {
                 }
             };
             
-            console.log('Final transformed data with package:', finalTransformedData);
+          //  console.log('Final transformed data with package:', finalTransformedData);
             setFinalData(finalTransformedData);
             
             // Call handlePayment directly with the latest data
@@ -274,7 +274,7 @@ const BusinessForm = () => {
     const handlePayment = async (paymentData = null) => {
         // Prevent multiple simultaneous payment calls
         if (isPaymentProcessing) {
-            console.log('Payment already in progress, skipping duplicate call');
+          //  console.log('Payment already in progress, skipping duplicate call');
             return;
         }
 
@@ -282,12 +282,12 @@ const BusinessForm = () => {
         try {
             // Use the passed data or fall back to finalData state
             const dataToSend = paymentData;
-            console.log('Payment data to send:', dataToSend);
+          //  console.log('Payment data to send:', dataToSend);
             
-            // Send the full data to backend
+          // Send the full data to backend
             const res = await fetch("http://localhost:5001/api/create-order", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ payload: dataToSend}),
             });
 
@@ -305,7 +305,7 @@ const BusinessForm = () => {
             // const stripe = await stripePromise;
             // await stripe.redirectToCheckout({ sessionId });
         } catch (err) {
-            console.error("Payment error:", err);
+          console.error("Payment error:", err);
             toast.error("Payment failed. Please try again.");
         } finally {
             setIsPaymentProcessing(false);
@@ -313,10 +313,7 @@ const BusinessForm = () => {
     };
 
     const handleNext = (errors, values, touched, setTouched) => {
-        console.log('handleNext called with activeTab:', activeTab);
-        console.log('Current values:', values);
-        console.log('Current errors:', errors);
-        console.log('isCurrentTabComplete result:', isCurrentTabComplete(activeTab, values));
+     
         
         // Clear any error messages when navigating
         setSubmitError('');
@@ -352,11 +349,10 @@ const BusinessForm = () => {
             return errors[field];
         });
 
-        console.log('hasErrors:', hasErrors);
-        console.log('isCurrentTabComplete:', isCurrentTabComplete(activeTab, values));
+        
 
         if (!hasErrors && isCurrentTabComplete(activeTab, values)) {
-            console.log('Moving to next tab');
+           
             // persist values before moving
             saveFormDataToStorage(values);
             if (!completedTabs.includes(activeTab)) {
@@ -364,12 +360,12 @@ const BusinessForm = () => {
             }
             setActiveTab(activeTab + 1);
         } else {
-            console.log('Cannot move to next tab - errors or incomplete');
+           // console.log('Cannot move to next tab - errors or incomplete');
         }
     };
 
     const handleBack = (values) => {
-        console.log('handleBack called with activeTab:', activeTab);
+      //  console.log('handleBack called with activeTab:', activeTab);
         
         // Clear any error messages when navigating
         setSubmitError('');
@@ -398,18 +394,22 @@ const BusinessForm = () => {
             justifyContent: 'center', 
             alignItems: 'center', 
             minHeight: '80vh',
-            p: 4
+            px: {xs: 2, md: 4},
+            py: {xs: 3, md: 4},
         }}>
             <Paper elevation={3} sx={{ 
                 maxWidth: 1200, 
                 width: '100%', 
                 mx: 'auto', 
-                p: 4, 
+                py: 4, 
+                px: {xs: 2, md: 4},
+                
                 bgcolor: '#ffffff', 
                 borderRadius: '16px', 
-                boxShadow: '0 12px 30px -8px rgba(0,0,0,0.1)' 
+                boxShadow: '0 12px 30px -8px rgba(0,0,0,0.1)', 
+                
             }}>
-                <Typography variant="h4" align="center" gutterBottom fontWeight="700" sx={{ mb: 4, color: '#111827' }}>
+                <Typography variant="h4" align="center" gutterBottom fontWeight="500" sx={{ mb: 4, color: '#111827', fontSize: {xs: '28px', md: '32px'} }}>
                     Submit Your Business Details
                 </Typography>
                 
@@ -456,6 +456,7 @@ const BusinessForm = () => {
                     validationSchema={validationSchema} 
                     onSubmit={handleFormSubmit}
                     enableReinitialize={true}
+                    
                 >
                     {({ values, errors, touched, handleChange, handleBlur, setFieldTouched }) => (
                         <Form>
@@ -509,23 +510,25 @@ const BusinessForm = () => {
                                     handleChange={handleChange}
                                     handleBlur={handleBlur}
                                 />
-                            )}
+                             )}
 
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 4 }}>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', mt: 4 }}>
                                 <Button 
                                     variant="outlined" 
                                     onClick={() => {
-                                        console.log('Back button clicked - moving from tab', activeTab, 'to', activeTab - 1);
+                                      
                                         setActiveTab(activeTab - 1);
                                     }}
                                     disabled={activeTab === 0}
                                     sx={{ 
                                         textTransform: 'none',
                                         fontWeight: 600,
+                                        color: '#000000',
+                                        borderColor: '#000000',
                                         height: '50px',
                                         borderRadius: '8px',
-                                        fontSize: '20px',
-                                        px: 4,
+                                        fontSize: {xs: '16px', md: '20px'},
+                                        px: {xs: 2, md: 4},
                                         py: 1.5
                                     }}
                                 >
@@ -536,7 +539,7 @@ const BusinessForm = () => {
                                     <Button 
                                         variant="contained" 
                                         onClick={() => {
-                                            console.log('Next button clicked - moving from tab', activeTab, 'to', activeTab + 1);
+                                           
                                             // Mark current tab as completed
                                             if (!completedTabs.includes(activeTab)) {
                                                 setCompletedTabs([...completedTabs, activeTab]);
@@ -548,7 +551,8 @@ const BusinessForm = () => {
                                             textTransform: 'none',
                                             fontWeight: 600,
                                             borderRadius: '8px',
-                                            px: 4,
+                                            px: {xs: 3, md: 4},
+                                            fontSize: {xs: '16px', md: '20px'},
                                             py: 1.5,
                                             bgcolor: '#ff3902ff',
                                             '&:hover': { bgcolor: '#ff0000ff' },
@@ -592,7 +596,7 @@ const BusinessForm = () => {
                                                     textTransform: 'none',
                                                     fontWeight: 600,
                                                     borderRadius: '8px',
-                                                    px: 4,
+                                                    px: {xs: 2, md: 4},
                                                     py: 1.5,
                                                     bgcolor: '#e02810ff',
                                                     '&:hover': { bgcolor: '#fc0202ff' },

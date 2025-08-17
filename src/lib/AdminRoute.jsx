@@ -1,35 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import axios from 'axios';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
 
 const AdminRoute = () => {
-  const [auth, setAuth] = useState(null);  
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
+  const [hasToken, setHasToken] = useState(false);
+
+  // Check for admin token in localStorage
+  const checkAdminToken = () => {
+    const adminToken = localStorage.getItem('adminToken');
+
+    
+    const hasToken = !!adminToken;
+    
+    
+    return hasToken;
+  };
 
   useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const { data } = await axios.get('https://lauchbackend-896056687002.europe-west1.run.app/api/admin/me', {
-          withCredentials: true,  
-        });
+    
+    
+    // Check token immediately
+    const tokenExists = checkAdminToken();
+    
+    setHasToken(tokenExists);
+    setLoading(false);
 
-        if (data.admin?.role === 'admin' || data.admin?.role === 'superadmin') {
-          setAuth(true);
-        } else {
-          setAuth(false);
-        }
-      } catch (error) {
-        setAuth(false);
-      } finally {
-        setLoading(false);
+    // Check token periodically (every 5 seconds)
+    const intervalId = setInterval(() => {
+      const tokenExists = checkAdminToken();
+    
+      if (!tokenExists && hasToken) {
+        // Token was removed, redirect to login
+      
+        window.location.href = '/admin-login';
       }
-    };
+      setHasToken(tokenExists);
+    }, 5000);
 
-    checkAdmin();
-  }, []);
+    return () => clearInterval(intervalId);
+  }, [hasToken]);
 
+  // Show loading while initializing
   if (loading) {
+   
     return (
       <Box
         sx={{
@@ -44,7 +59,14 @@ const AdminRoute = () => {
     );
   }
 
-  return auth ? <Outlet /> : <Navigate to="/admin-login" replace />;
+  // Redirect if no token
+  if (!hasToken) {
+   
+    return <Navigate to="/admin-login" replace state={{ from: location }} />;
+  }
+
+
+  return <Outlet />;
 };
 
 export default AdminRoute;

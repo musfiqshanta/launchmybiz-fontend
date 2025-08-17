@@ -86,7 +86,7 @@ const Navbar = () => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        px: 3,
+        px: {xs: 1.2, md: 3},
         py: { xs: .8, md: 1.5 },
         borderRadius: '50px',
         backgroundColor: '#fff',
@@ -110,11 +110,75 @@ const Navbar = () => {
         
       </Box>
 
-      {/* Right: Menu Items or Hamburger */}
-      {isMobile ? (
+      
+      
+        <Box display={{xs: "none", md: "flex"}} alignItems="center"  gap={4}>
+          
+          {menuItems.map((item, index) => (
+            <Typography
+              key={index}
+              onClick={() => handleMenuItemClick(item.url)}
+              sx={{ cursor: 'pointer', fontWeight: 500 }}
+            >
+              {item.label}
+            </Typography>
+          ))} 
+           </Box>
+
+           <Box display={"flex"} alignItems="center"  gap={0}>
+          {!user ? (
+            <Button
+              variant="contained"
+              onClick={() => navigate("/signin")}
+              sx={{
+                bgcolor: '#e70000',
+                borderRadius: '25px',
+                textTransform: 'none',
+                color: '#fff',
+                px: 3,
+                py: 1,
+                fontWeight: 'bold',
+                '&:hover': { bgcolor: '#c80000' },
+                display: {xs: "none", md: "flex"}
+              }}
+            >
+              Sign in
+            </Button>
+
+            
+          ) : (
+            <Box display={{ xs: 'flex', md: 'flex' }} alignItems="center" gap={{xs: 0, md: 2}}>
+              <Avatar
+                src={user?.image || user?.avatarUrl || user?.photoURL || '/user.png'}
+                alt={user?.name || user?.email || 'User'}
+                sx={{ width: 32, height: 32, cursor: 'pointer',  borderRadius: '50%',boxShadow: '0 0 8px rgba(0,0,0,0.1)' }}
+                onClick={() => navigate('/user/dashboard')}
+              />
+
+              <Button
+                variant="outlined"
+                onClick={() => { logout(); navigate('/'); }}
+                sx={{
+                  bgcolor: '#e70000',
+                  borderRadius: '25px',
+                  textTransform: 'none',
+                  color: '#fff',
+                  px: 3,
+                  py: 1,
+                  fontWeight: 'bold',
+                  '&:hover': { bgcolor: '#c80000' },
+                  display: {xs: "none", md: "flex"}
+                }}
+              >
+                Logout
+              </Button>
+            </Box>
+          )}
+
+{isMobile ? (
         <>
-          <IconButton onClick={handleMenuClick}>
-            <FiMenu size={24} />
+          <IconButton onClick={handleMenuClick} sx={{ color: '#e70000', }} >
+            <FiMenu size={26}  />
           </IconButton>
 
           <Menu
@@ -123,6 +187,7 @@ const Navbar = () => {
             onClose={handleMenuClose}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            
           >
             {menuItems.map((item, index) => (
               <MenuItem key={index} onClick={() => handleMenuItemClick(item.url)}>
@@ -146,72 +211,21 @@ const Navbar = () => {
                 </Button>
               </MenuItem>
             ) : (
-              <MenuItem onClick={() => { logout(); handleMenuClose(); navigate('/'); }}>
+              <MenuItem sx={{
+                bgcolor: '#e70000',
+                borderRadius: '5px',
+                textTransform: 'none',
+                color: '#fff',
+                px: 3, mx: 2,
+                '&:hover': { bgcolor: '#c80000' }
+              }} onClick={() => { logout(); handleMenuClose(); navigate('/'); }}>
                 Logout
               </MenuItem>
             )}
           </Menu>
         </>
       ) : ""}
-      
-        <Box display={{xs: "none", md: "flex"}} alignItems="center"  gap={4}>
-          
-          {menuItems.map((item, index) => (
-            <Typography
-              key={index}
-              onClick={() => handleMenuItemClick(item.url)}
-              sx={{ cursor: 'pointer', fontWeight: 500 }}
-            >
-              {item.label}
-            </Typography>
-          ))} 
-           </Box>
-          {!user ? (
-            <Button
-              variant="contained"
-              onClick={() => navigate("/signin")}
-              sx={{
-                bgcolor: '#e70000',
-                borderRadius: '25px',
-                textTransform: 'none',
-                color: '#fff',
-                px: 3,
-                py: 1,
-                fontWeight: 'bold',
-                '&:hover': { bgcolor: '#c80000' },
-                display: {xs: "none", md: "flex"}
-              }}
-            >
-              Sign in
-            </Button>
-          ) : (
-            <Box display={{ xs: 'none', md: 'flex' }} alignItems="center" gap={2}>
-              <Avatar
-                src={user?.image || user?.avatarUrl || user?.photoURL || '/image.png'}
-                alt={user?.name || user?.email || 'User'}
-                sx={{ width: 32, height: 32, cursor: 'pointer' }}
-                onClick={() => navigate('/user/dashboard')}
-              />
-              <Button
-                variant="outlined"
-                onClick={() => { logout(); navigate('/'); }}
-                sx={{
-                  bgcolor: '#e70000',
-                  borderRadius: '25px',
-                  textTransform: 'none',
-                  color: '#fff',
-                  px: 3,
-                  py: 1,
-                  fontWeight: 'bold',
-                  '&:hover': { bgcolor: '#c80000' },
-                  display: {xs: "none", md: "flex"}
-                }}
-              >
-                Logout
-              </Button>
-            </Box>
-          )}
-       
+      </Box> 
       
     </Box>
 

@@ -8,9 +8,12 @@ import {
   YouTube,
   Phone,
   Mail,
-  LocationOn
+  LocationOn,
+  
 } from '@mui/icons-material';
+import XIcon from '@mui/icons-material/X';
 import footerImage from "../assets/Group 1000006360 copy 1.png"
+import footerImage2 from "../assets/footerlogo.png"
 
 const SquareIcon = ({ href, children, aria }) => (
   <IconButton
@@ -19,16 +22,15 @@ const SquareIcon = ({ href, children, aria }) => (
     target="_blank"
     rel="noopener noreferrer"
     sx={{
-      border: '1px solid rgba(255,255,255,0.12)',
-      borderRadius: 1,
-      width: 36,
-      height: 36,
+      
+      width: {xs: 28, md: 32},
+      height: {xs: 28, md: 32},
       p: 0,
-      color: 'common.white',
+      color: '#6E6E6E',
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
-      '&:hover': { backgroundColor: 'rgba(255,255,255,0.04)' }
+      
     }}
   >
     {children}
@@ -40,10 +42,10 @@ const FooterLink = ({ href, children }) => (
     href={href}
     underline="none"
     sx={{
-      color: 'grey.400',
+      color: '#FFFFFF',
       display: 'block',
       mb: 1.25,
-      fontSize: '0.98rem',
+      fontSize: {xs: '15px', md: '16px'},
       '&:hover': { color: 'common.white' }
     }}
   >
@@ -52,14 +54,14 @@ const FooterLink = ({ href, children }) => (
 );
 
 const ContactRow = ({ IconComp, children, href }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, fontSize: {xs: '14px', md: '16px'} }}>
     <IconComp sx={{ color: 'grey.400', mr: 1.25, fontSize: 20 }} />
     {href ? (
-      <Link href={href} underline="hover" sx={{ color: 'grey.300', '&:hover': { color: 'common.white' } }}>
+      <Link href={href} underline="hover" sx={{ color: '#FFFFFF', '&:hover': { color: 'common.white' } }}>
         {children}
       </Link>
     ) : (
-      <Typography sx={{ color: 'grey.300', fontSize: '0.98rem' }}>{children}</Typography>
+      <Typography sx={{ color: '#FFFFFF', fontSize: {xs: '14px', md: '16px'} }}>{children}</Typography>
     )}
   </Box>
 );   
@@ -74,44 +76,44 @@ export default function Footer() {
           <Box sx={{ width: {xs: '100%', md: "50%"}}} >
             <Box>
               <img
-                src="/mainlogo-3-2.png"
+                src={footerImage2}
                 alt="Launch logo"
-                style={{ height: 44, filter: 'invert(1) brightness(2) grayscale(1)' }}
+                style={{ height: 44, }}
               />
             </Box>
 
-            <Box sx={{ mt: 3, display: 'flex', gap: 1.25, flexWrap: 'wrap' }}>
-              <SquareIcon href="https://linkedin.com" aria="linkedin"><LinkedIn fontSize="small" /></SquareIcon>
-              <SquareIcon href="https://facebook.com" aria="facebook"><Facebook fontSize="small" /></SquareIcon>
-              <SquareIcon href="https://instagram.com" aria="instagram"><Instagram fontSize="small" /></SquareIcon>
-              <SquareIcon href="#" aria="x"><Close fontSize="small" /></SquareIcon>
-              <SquareIcon href="https://youtube.com" aria="youtube"><YouTube fontSize="small" /></SquareIcon>
+            <Box sx={{ mt: 3, display: 'flex', gap: 2.25, flexWrap: 'wrap' }}>
+              <SquareIcon href="https://linkedin.com" aria="linkedin"><LinkedIn  sx={{fontSize: {xs: '30px', md: '36px'}}} /></SquareIcon>
+              <SquareIcon href="https://facebook.com" aria="facebook"><Facebook sx={{fontSize: {xs: '30px', md: '36px'}}} /></SquareIcon>
+              <SquareIcon href="https://instagram.com" aria="instagram"><Instagram sx={{fontSize: {xs: '30px', md: '36px'}}} /></SquareIcon>
+              <SquareIcon href="#" aria="x"><XIcon sx={{fontSize: {xs: '30px', md: '36px'}}} /></SquareIcon>
+              <SquareIcon href="https://youtube.com" aria="youtube"><YouTube sx={{fontSize: {xs: '30px', md: '36px'}}} /></SquareIcon>
             </Box>
           </Box>
 
           <Box display={"flex"} flexDirection={{xs: "column", md: "row"}} gap={{xs: 3, md: 0}} mt={{xs: 5, md: 0}} sx={{ width: {xs: '100%', md: "50%"}}} alignItems="center" justifyContent={"center"}>
           <Box sx={{ width: {xs: '100%', md: "40%"}}}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, color: 'common.white' }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 500, color: 'common.white', fontSize: {xs: '20px', md: '20px'} }}>
               Quick Link
             </Typography>
 
-            <Box component="nav" aria-label="footer links">
-              <FooterLink href="#">Services</FooterLink>
-              <FooterLink href="#">About</FooterLink>
-              <FooterLink href="#">Packages</FooterLink>
-              <FooterLink href="#">Blogs</FooterLink>
+            <Box component="nav" aria-label="footer links" >
+              <FooterLink sx={{ mb: 2, fontWeight: 400, color: 'common.white', fontSize: {xs: '16px', md: '20px'} }} href="#">Services</FooterLink>
+              <FooterLink sx={{ mb: 2, fontWeight: 400, color: 'common.white', fontSize: {xs: '16px', md: '20px'} }} href="#">About</FooterLink>
+              <FooterLink sx={{ mb: 2, fontWeight: 400, color: 'common.white', fontSize: {xs: '16px', md: '20px'} }} href="#">Packages</FooterLink>
+              <FooterLink sx={{ mb: 2, fontWeight: 400, color: 'common.white', fontSize: {xs: '16px', md: '20px'} }} href="#">Blogs</FooterLink>
             </Box>
           </Box>
 
           {/* RIGHT: contact */}
           <Box sx={{ width: {xs: '100%', md: "60%"}}}>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 700, color: 'common.white' }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 500, color: 'common.white', fontSize: {xs: '20px', md: '20px'} }}>
               Contact Us
             </Typography>
 
-            <ContactRow IconComp={Phone} href="tel:+15306258265">+1 (530) 625-8265</ContactRow>
-            <ContactRow IconComp={Mail} href="mailto:support@launchmybiz.net">support@launchmybiz.net</ContactRow>
-            <ContactRow IconComp={LocationOn}>
+            <ContactRow sx={{ fontWeight: 400, color: 'common.white', fontSize: {xs: '10px', md: '16px'} }} st IconComp={Phone} href="tel:+15306258265">+1 (530) 625-8265</ContactRow>
+            <ContactRow sx={{ fontWeight: 400, color: 'common.white', fontSize: {xs: '10px', md: '16px'} }} IconComp={Mail} href="mailto:support@launchmybiz.net">support@launchmybiz.net</ContactRow>
+            <ContactRow sx={{ fontWeight: 400, color: 'common.white', fontSize: {xs: '10px', md: '16px'} }} IconComp={LocationOn}>
               10880 Wilshire Blvd, Suite 101-0048, Los Angeles, CA 90024
             </ContactRow>
           </Box>
@@ -154,7 +156,7 @@ export default function Footer() {
               
             }}
           >
-            <Typography variant="body2" sx={{ color: 'grey.500', fontSize: {xs: '10px', md: '14px'}, }}>
+            <Typography variant="body2" sx={{ color: 'grey.500', fontSize: {xs: '12px', md: '14px'}, textAlign: {xs: 'center', md: 'left'} }}>
               Copyright © 2004–2025 LaunchmyBiz - All Rights Reserved.
             </Typography>
 

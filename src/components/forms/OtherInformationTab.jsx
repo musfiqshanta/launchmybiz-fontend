@@ -13,6 +13,7 @@ import {
     FormControlLabel,
     Radio
 } from '@mui/material';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import SpeedIcon from '@mui/icons-material/Speed';
 import BusinessIcon from '@mui/icons-material/Business';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
@@ -68,7 +69,7 @@ const OtherInformationTab = ({ values, errors, touched, handleChange, handleBlur
                 </Grid>
 
                 {/* Registered Agent */}
-                <Grid sx={{ width: { xs: '100%', md: '50%' } }}>
+                <Grid sx={{ width: { xs: '100%', md: '50%' }, mt: {xs: 2, md: 0}}}>
                     <FormLabel sx={formLabelStyles}>Registered Agent</FormLabel>
                     <FormControl fullWidth>
                         <Select
@@ -78,13 +79,18 @@ const OtherInformationTab = ({ values, errors, touched, handleChange, handleBlur
                             onBlur={handleBlur}
                             error={touched.registeredAgentChoice && !!errors.registeredAgentChoice}
                             displayEmpty
-                            sx={{
-                                ...textFieldStyles,
-                                '& .MuiSelect-select': {
-                                    paddingLeft: '40px',
-                                    textAlign: 'left'
-                                }
-                            }}
+                            input={
+                                <OutlinedInput
+                                  sx={{
+                                    borderRadius: "8px",
+                                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                      borderColor: "#e70000",
+                                    },
+                                    "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                      borderColor: "#e70000",
+                                    },
+                                  }}
+                                /> }
                         >
                             <MenuItem value="corpnet">Use LAUNCH as my Registered Agent</MenuItem>
                             <MenuItem value="own">I will provide my own Registered Agent</MenuItem>

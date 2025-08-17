@@ -74,20 +74,22 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
+     // https://lauchbackend-896056687002.europe-west1.run.app
       const res = await axios.post(
-        'https://lauchbackend-896056687002.europe-west1.run.app/api/admin/signin',
-        { email, password },
-        { withCredentials: true } 
+        'http://localhost:5001/api/admin/signin',
+        { email, password }
       );
 
-      
-      if (res.data.token) {
-        const expires = new Date(Date.now() + 86400 * 1000).toUTCString();
-        document.cookie = `token=${res.data.token}; expires=${expires}; path=/; SameSite=Strict`;
+      // Store admin token in localStorage
+      const adminToken = res.data?.token || res.data?.accessToken;
+      if (adminToken) {
+        localStorage.setItem('adminToken', adminToken);
+       
+        toast.success('Login successful!');
+        navigate('/admin-panel');
+      } else {
+        throw new Error('No token received from server');
       }
-    console.log(res.data.token,'res.data.token')
-      toast.success('Login successful!');
-      navigate('/admin-panel');
     } catch (err) {
       console.error(err);
       toast.error(
@@ -141,7 +143,7 @@ export default function AdminLogin() {
           }}
         >
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5 }}>
-            <Avatar sx={{ m: 1, bgcolor: 'primary.main', width: 56, height: 56 }}>
+            <Avatar sx={{ m: 1, bgcolor: '#e70000', width: 56, height: 56 }}>
               <LockOutlinedIcon />
             </Avatar>
           </motion.div>
@@ -206,7 +208,7 @@ export default function AdminLogin() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2, py: 1.5, borderRadius: 2, boxShadow: '0 3px 5px 2px rgba(33, 203, 243, .3)' }}
+                sx={{ mt: 3, mb: 2, py: 1.5, borderRadius: 2, boxShadow: '0 3px 5px 2px rgba(243, 79, 33, 0.3)', backgroundColor: '#e70000' }}
               >
                 Sign In
               </Button>

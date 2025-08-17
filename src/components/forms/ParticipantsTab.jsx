@@ -13,6 +13,7 @@ import {
     Paper,
     IconButton
 } from '@mui/material';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import { FieldArray } from 'formik';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
@@ -161,13 +162,18 @@ const ParticipantsTab = ({ values, errors, touched, handleChange, handleBlur }) 
                                                         onBlur={handleBlur}
                                                         error={participantTouched.state && !!participantErrors.state}
                                                         displayEmpty
-                                                        sx={{
-                                                            ...textFieldStyles,
-                                                            '& .MuiSelect-select': {
-                                                                paddingLeft: '14px',
-                                                                textAlign: 'left'
-                                                            }
-                                                        }}
+                                                        input={
+                                                            <OutlinedInput
+                                                              sx={{
+                                                                borderRadius: "8px",
+                                                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                                  borderColor: "#e70000",
+                                                                },
+                                                                "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                                                  borderColor: "#e70000",
+                                                                },
+                                                              }}
+                                                            /> }
                                                     >
                                                         <MenuItem value="" disabled>
                                                             Select state...
@@ -184,7 +190,7 @@ const ParticipantsTab = ({ values, errors, touched, handleChange, handleBlur }) 
                                                 </FormControl>
                                             </Grid>
                                             
-                                            <Grid sx={{width: { xs: '100%', md: "50%"}}}>
+                                            <Grid sx={{width: { xs: '100%', md: "50%"}, mt: {xs: 2, md: 0}}}>
                                                 <FormLabel sx={formLabelStyles}>
                                                     Country
                                                 </FormLabel>
@@ -196,13 +202,18 @@ const ParticipantsTab = ({ values, errors, touched, handleChange, handleBlur }) 
                                                         onBlur={handleBlur}
                                                         error={participantTouched.country && !!participantErrors.country}
                                                         displayEmpty
-                                                        sx={{
-                                                            ...textFieldStyles,
-                                                            '& .MuiSelect-select': {
-                                                                paddingLeft: '14px',
-                                                                textAlign: 'left'
-                                                            }
-                                                        }}
+                                                        input={
+                                                            <OutlinedInput
+                                                              sx={{
+                                                                borderRadius: "8px",
+                                                                "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                                                  borderColor: "#e70000",
+                                                                },
+                                                                "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                                                  borderColor: "#e70000",
+                                                                },
+                                                              }}
+                                                            /> }
                                                     >
                                                         <MenuItem value="" disabled>
                                                             Select country...
@@ -323,7 +334,7 @@ const ParticipantsTab = ({ values, errors, touched, handleChange, handleBlur }) 
                                 Contributed: '',
                                 ContributerMarketValue: ''
                             })}
-                            sx={{ mt: 2 }}
+                            sx={{ mt: 2, color: "#e70000" }}
                         >
                             Add Participant
                         </Button>

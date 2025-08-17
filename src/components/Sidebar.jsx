@@ -6,9 +6,10 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../lib/AuthContext";
-
+import HomeIcon from '@mui/icons-material/Home';
 
 const menuItems = [
+  { text: "HomePage", path: "/", icon: <HomeIcon /> },
   { text: "Overview", path: "/user/dashboard", icon: <DashboardIcon /> },
   { text: "Profile", path: "/user/dashboard/profile", icon: <PersonIcon /> },
   { text: "Orders", path: "/user/dashboard/orders", icon: <ReceiptLongIcon /> },

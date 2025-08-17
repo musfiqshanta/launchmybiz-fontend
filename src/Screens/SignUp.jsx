@@ -89,7 +89,7 @@ export default function SignupPage() {
             validationSchema={SignupSchema}
             onSubmit={async (values, { setSubmitting }) => {
               try {
-                console.log(values);
+              
                 
                 const res = await fetch("http://localhost:5001/api/customers/signup", {
                   method: "POST",
@@ -103,7 +103,7 @@ export default function SignupPage() {
 
                 const data = await res.json();
                 toast.success("Signup successfull");
-                console.log("Signup success:", data);
+               
                 navigate("/signin");
                 // localStorage.setItem("token", data.token);
               } catch (error) {

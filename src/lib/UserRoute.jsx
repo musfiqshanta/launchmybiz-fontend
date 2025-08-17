@@ -7,6 +7,7 @@ function UserRoute() {
   const location = useLocation();
   const { token, loading } = useAuth();
 
+  // Show loading while initializing
   if (loading) {
     return (
       <Box sx={{ display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>
@@ -15,6 +16,7 @@ function UserRoute() {
     );
   }
 
+  // Redirect if no token
   if (!token) {
     return <Navigate to="/signin" replace state={{ from: location }} />;
   }

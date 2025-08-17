@@ -55,7 +55,7 @@ export const textFieldStyles = {
         '& fieldset': { borderColor: '#d1d5db' }, 
         '&:hover fieldset': { borderColor: '#9ca3af' }, 
         '&.Mui-focused fieldset': { 
-            borderColor: '#d8361dff', 
+            borderColor: '#e70000', 
             boxShadow: '0 0 0 3.5px rgba(216, 76, 29, 0.15)' 
         }, 
         '& .MuiInputAdornment-root .MuiSvgIcon-root': { 

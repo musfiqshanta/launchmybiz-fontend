@@ -25,14 +25,21 @@ export default function Orders() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [businessTypeFilter, setBusinessTypeFilter] = useState('all');
   const { user } = useAuth();
   const userId = user.id;
   const role = 'user';
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['user-orders', page, rowsPerPage, userId],
+    queryKey: ['user-orders', page, rowsPerPage, userId, businessTypeFilter],
     queryFn: async () => {
       const res = await api.get('/api/orders', {
-        params: { userId, role, page: page + 1, limit: rowsPerPage }
+        params: { 
+          userId, 
+          role, 
+          page: page + 1, 
+          limit: rowsPerPage,
+          businessType: businessTypeFilter !== 'all' ? businessTypeFilter : undefined
+        }
       });
       return res.data;
     },
@@ -40,21 +47,55 @@ export default function Orders() {
   });
 
   const orders = data?.orders || [];
-  console.log(orders);
+
   
   const total = data?.total || 0;
 
   const handleViewDetails = (order) => setSelectedOrder(order);
   const handleCloseDetails = () => setSelectedOrder(null);
+  
+  const handleBusinessTypeFilterChange = (event) => {
+    setBusinessTypeFilter(event.target.value);
+    setPage(0); // Reset to first page when filter changes
+  };
 
-  return (
-    <Box>
-      <Typography textAlign="center" variant="h5" fontWeight={700} mb={2}>My Orders</Typography>
-      <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden', borderRadius: 2 }}>
+      return (
+      <Box>
+        <Typography textAlign="center" variant="h5" fontWeight={700} mb={2}>My Orders</Typography>
+        
+        {/* Filter Section */}
+        <Box sx={{ display: 'flex', justifyContent: 'end', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography variant="body2" color="text.secondary">
+              Filter by Business Type:
+            </Typography>
+            <select
+              value={businessTypeFilter}
+              onChange={handleBusinessTypeFilterChange}
+              style={{
+                padding: '8px 12px',
+                borderRadius: 6,
+                border: '1px solid #ccc',
+                backgroundColor: '#fff',
+                color: '#333',
+                fontSize: '14px',
+                cursor: 'pointer',
+                minWidth: '120px'
+              }}
+            >
+              <option value="all">All Types</option>
+              <option value="LLC">LLC</option>
+              <option value="NO-LLC">NO-LLC</option>
+            </select>
+          </Box>
+        </Box>
+        
+        <Paper elevation={3} sx={{ width: '100%', overflow: 'hidden', borderRadius: 2 }}>
         <TableContainer sx={{ maxHeight: 'calc(100vh - 250px)' }}>
           <Table stickyHeader aria-label="orders table">
             <TableHead>
               <TableRow>
+              <TableCell>Business Type</TableCell>  
                 <TableCell>Company Name</TableCell>
                 <TableCell>Contact</TableCell>
                 <TableCell>Status</TableCell>
@@ -66,6 +107,7 @@ export default function Orders() {
             <TableBody>
               {(orders.length > 0 ? orders : []).map((order) => (
                 <TableRow hover key={order._id}>
+                  <TableCell>{order.BusinessStructureType}</TableCell>
                   <TableCell>{order.CompanyInfo?.CompanyDesiredName}</TableCell>
                   <TableCell>
                     <Box>
@@ -127,10 +169,10 @@ export default function Orders() {
                     <DetailItem label="Phone" value={selectedOrder.Contact?.contactPhone} />
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <DetailItem label="Address" value={`${selectedOrder.BusinessAddress?.BusinessAddressAddress1}, ${selectedOrder.BusinessAddress?.BusinessAddressAddress2}`} />
-                    <DetailItem label="City" value={selectedOrder.BusinessAddress?.BusinessAddressCity} />
-                    <DetailItem label="State/Zip" value={`${selectedOrder.BusinessAddress?.BusinessAddressState} ${selectedOrder.BusinessAddress?.BusinessAddressZip}`} />
-                    <DetailItem label="Country" value={selectedOrder.BusinessAddress?.BusinessAddressCountry} />
+                    <DetailItem label="Address" value={`${selectedOrder.BusinessAddress?.BusinessAddressAddress1 || ''}, ${selectedOrder.BusinessAddress?.BusinessAddressAddress2 || ''}`} />
+                    <DetailItem label="City" value={selectedOrder.BusinessAddress?.BusinessAddressCity || ''} />
+                    <DetailItem label="State/Zip" value={`${selectedOrder.BusinessAddress?.BusinessAddressState || ''} ${selectedOrder.BusinessAddress?.BusinessAddressZip || ''}`} />
+                    <DetailItem label="Country" value={selectedOrder.BusinessAddress?.BusinessAddressCountry || ''} />
                   </Grid>
                 </Grid>
               </AccordionDetails>

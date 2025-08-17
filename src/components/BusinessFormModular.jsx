@@ -205,8 +205,8 @@ const BusinessFormModular = () => {
 
     const handlePackageSelect = async (packageData) => {
         try {
-            console.log('Package selection handler called with:', packageData);
-            console.log('Business form data:', businessFormValues);
+            // console.log('Package selection handler called with:', packageData);
+            // console.log('Business form data:', businessFormValues);
             
             // Extract packageInfo and selectedPlan from the received data
             const { selectedPlan, ...packageInfo } = packageData;
@@ -227,9 +227,9 @@ const BusinessFormModular = () => {
                 }
             };
             
-            console.log('Final transformed data with package:', finalTransformedData);
+          //  console.log('Final transformed data with package:', finalTransformedData);
             setFinalData(finalTransformedData);
-            console.log(finalData);
+          //  console.log(finalData);
             
             // For now, just show a success message
             alert(`Package "${packageInfo.name}" selected successfully! Total: $${totalPrice}`);
@@ -253,7 +253,7 @@ const BusinessFormModular = () => {
 
     const handlePayment = async () => {
         try {
-            console.log('Final data:', finalData);
+           // console.log('Final data:', finalData);
             // Send the full data to backend
             const res = await fetch("http://localhost:5001/api/create-order", {
                 method: "POST",

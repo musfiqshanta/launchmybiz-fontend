@@ -21,6 +21,7 @@ import { red } from '@mui/material/colors';
 import founder from '../assets/Rectangle 746.png'; 
 import click from '../assets/Frame 144.png'; // Replace with actual path to red tick icon
 import CustomPlanModal from './CustomPlanModal';
+import PackageSelectionModal from './PackageSelectionModal';
 
 const founders = [
   {
@@ -73,6 +74,8 @@ const packages = [
 
 export default function FoundersAndPackages() {
   const [isCustomPlanModalOpen, setIsCustomPlanModalOpen] = useState(false);
+  const [isPackageSelectionModalOpen, setIsPackageSelectionModalOpen] = useState(false);
+  const [selectedPackageType, setSelectedPackageType] = useState('');
 
   const handleCustomPlanClick = () => {
     setIsCustomPlanModalOpen(true);
@@ -80,6 +83,16 @@ export default function FoundersAndPackages() {
 
   const handleCloseCustomPlanModal = () => {
     setIsCustomPlanModalOpen(false);
+  };
+
+  const handlePackageClick = (packageType) => {
+    setSelectedPackageType(packageType);
+    setIsPackageSelectionModalOpen(true);
+  };
+
+  const handleClosePackageSelectionModal = () => {
+    setIsPackageSelectionModalOpen(false);
+    setSelectedPackageType('');
   };
 
   return (
@@ -262,7 +275,16 @@ export default function FoundersAndPackages() {
               variant="outlined"
               color="error"
               fullWidth
-              onClick={pkg.title === 'Custom' ? handleCustomPlanClick : undefined}
+              onClick={() => {
+                if (pkg.title === 'Custom') {
+                  handleCustomPlanClick();
+                } else if (pkg.title === 'Basic') {
+                  // Navigate directly to business form for Basic package
+                  window.location.href = '/business-form';
+                } else if (pkg.title === 'Premium' || pkg.title === 'Platinum') {
+                  handlePackageClick(pkg.title);
+                }
+              }}
               sx={{
                 fontWeight: '400',
                 borderRadius: 2,
@@ -311,6 +333,13 @@ export default function FoundersAndPackages() {
     <CustomPlanModal 
       open={isCustomPlanModalOpen} 
       onClose={handleCloseCustomPlanModal} 
+    />
+    
+    {/* Package Selection Modal */}
+    <PackageSelectionModal 
+      open={isPackageSelectionModalOpen} 
+      onClose={handleClosePackageSelectionModal}
+      packageType={selectedPackageType}
     />
     </div>
   );

@@ -8,15 +8,17 @@ import {
     FormLabel,
     InputAdornment,
     FormControl,
-    Select
+    Select,
+    
 } from '@mui/material';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { categories, textFieldStyles, formLabelStyles } from '../../utils/formConstants';
 
 const CompanyInformationTab = ({ values, errors, touched, handleChange, handleBlur }) => {
     return (
-        <Box>
+        <Box sx={{width: "100%",}}>
             <Typography variant="h6" sx={{ 
                 fontWeight: 600, 
                 color: '#1f2937', 
@@ -93,13 +95,19 @@ const CompanyInformationTab = ({ values, errors, touched, handleChange, handleBl
                                 onBlur={handleBlur}
                                 error={touched.category && !!errors.category}
                                 displayEmpty
-                                sx={{
-                                    ...textFieldStyles,
-                                    '& .MuiSelect-select': {
-                                        paddingLeft: '40px',
-                                        textAlign: 'left'
-                                    }
-                                }}
+                                input={
+                                    <OutlinedInput
+                                      sx={{
+                                        borderRadius: "8px",
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                          borderColor: "#e70000",
+                                        },
+                                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                          borderColor: "#e70000",
+                                        },
+                                      }}
+                                    /> }
+                                
                             >
                                 <MenuItem value="" disabled>
                                     Select Business Category

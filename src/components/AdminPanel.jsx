@@ -11,7 +11,7 @@ import {
     Dashboard as DashboardIcon, ShoppingCart as ShoppingCartIcon, People as PeopleIcon,
     Settings as SettingsIcon, Menu as MenuIcon, Info as InfoIcon,
     ExpandMore as ExpandMoreIcon, AccountCircle, CorporateFare, LocationOn,
-    BusinessCenter, Visibility, VisibilityOff, Lock
+    BusinessCenter, Visibility, VisibilityOff, Lock, Logout as LogoutIcon
 } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { useQuery } from '@tanstack/react-query';
@@ -110,24 +110,20 @@ function OrderList() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const [businessTypeFilter, setBusinessTypeFilter] = useState('all');
   
-  // const { data, isLoading, isError, error,refetch } = useQuery({
-  //   queryKey: ['orders', page, rowsPerPage],
-  //   queryFn: async () => {
-  //     const res = await axios.get(`https://lauchbackend-896056687002.europe-west1.run.app/api/admin/business-orders`, {
-  //       params: { page: page + 1, limit: rowsPerPage },
-  //       withCredentials:true
-  //     });
-  //     return res.data;
-  //   },
-  //   keepPreviousData: true,
-  // });
+ 
   const role = 'admin';
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['user-orders', page, rowsPerPage,],
+    queryKey: ['user-orders', page, rowsPerPage, businessTypeFilter],
     queryFn: async () => {
       const res = await api.get('/api/orders', {
-        params: { role, page: page + 1, limit: rowsPerPage }
+        params: { 
+          role, 
+          page: page + 1, 
+          limit: rowsPerPage,
+          businessType: businessTypeFilter !== 'all' ? businessTypeFilter : undefined
+        }
       });
       return res.data;
     },
@@ -143,6 +139,11 @@ function OrderList() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleBusinessTypeFilterChange = (event) => {
+    setBusinessTypeFilter(event.target.value);
+    setPage(0); // Reset to first page when filter changes
   };
   
   const getStatusChip = (status) => {
@@ -184,8 +185,7 @@ function OrderList() {
   const handleDownloadExcel = async () => {
     try {
       const res = await api.get('/api/admin/business-orders/export', {
-        responseType: 'blob',
-        withCredentials: true
+        responseType: 'blob'
       });
       FileDownload(res.data, 'business-orders.xlsx');
     } catch (err) {
@@ -196,7 +196,7 @@ function OrderList() {
   const handleStatusChange = async (order, newStatus) => {
     setUpdating(true);
     try {
-      await api.put(`/api/admin/business-orders/${order._id}/status`, { status: newStatus }, { withCredentials: true });
+      await api.put(`/api/admin/business-orders/${order._id}/status`, { status: newStatus });
       handleCloseDetails();
       refetch();
       toast.success('Order status updated and user notified by email.');
@@ -211,8 +211,7 @@ function OrderList() {
   const handleDownloadSingleExcel = async (orderId) => {
     try {
       const res = await api.get(`/api/admin/business-orders/${orderId}/export`, {
-        responseType: 'blob',
-        withCredentials: true
+        responseType: 'blob'
       });
       FileDownload(res.data, `order-${orderId}.xlsx`);
     } catch (err) {
@@ -232,11 +231,38 @@ function OrderList() {
           <Typography variant="h6" gutterBottom component="div" sx={{ mb: 0 }}>
             Business Orders
           </Typography>
-          <Button variant="outlined" sx={{borderColor: '#f44336', color: '#f44336'}}  onClick={handleDownloadExcel}>Download Excel</Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                Filter:
+              </Typography>
+              <select
+                value={businessTypeFilter}
+                onChange={handleBusinessTypeFilterChange}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: 4,
+                  border: '1px solid #ccc',
+                  backgroundColor: '#fff',
+                  color: '#333',
+                  fontSize: '14px',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="all">All Types</option>
+                <option value="LLC">LLC</option>
+                <option value="NO-LLC">NO-LLC</option>
+              </select>
+            </Box>
+            <Button variant="outlined" sx={{borderColor: '#f44336', color: '#f44336'}} onClick={handleDownloadExcel}>
+              Download Excel
+            </Button>
+          </Box>
         </Box>
         <TableContainer sx={{ maxHeight: 'calc(100vh - 250px)' }}>
           <Table stickyHeader aria-label="sticky table">
             <TableHead><TableRow>
+            <TableCell>Business Type</TableCell>
               <TableCell>Company Name</TableCell>
               <TableCell>Contact</TableCell>
               <TableCell>Status</TableCell>
@@ -247,7 +273,8 @@ function OrderList() {
             <TableBody>
             {(orders.length > 0 ? orders : []).map((order) => (
                 <TableRow hover key={order._id}>
-                  <TableCell>{order.CompanyInfo?.CompanyDesiredName}</TableCell>
+                  <TableCell>{order.BusinessStructureType}</TableCell>
+                  <TableCell>{order.CompanyInfo?.CompanyDesiredName || 'N/A'}</TableCell>
                   <TableCell>
                     <Box>
                       <Typography variant="body2">{`${order.Contact?.contactFirstName || ''} ${order.Contact?.contactLastName || ''}`}</Typography>
@@ -264,73 +291,13 @@ function OrderList() {
                   </TableCell>
                 </TableRow>
               ))}
-              {/* {(orders.length > 0 ? orders : []).map((row) => (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row._id || row.id}>
-                  <TableCell component="th" scope="row">{row.CompanyInfo?.CompanyDesiredName}</TableCell>
-                  <TableCell>
-                      <Box>
-                          <Typography variant="body2">{`${row.Contact?.ContactFirstName || ''} ${row.Contact?.ContactLastName || ''}`}</Typography>
-                          <Typography variant="caption" color="text.secondary">{row.Contact?.ContactEmail}</Typography>
-                      </Box>
-                  </TableCell>
-                  <TableCell>{getStatusChip(row.paymentStatus)}</TableCell>
-                  <TableCell align="right">${row.selectedPackage?.totalPrice?.toFixed(2) ?? '0.00'}</TableCell>
-                  <TableCell>{row.createdAt ? format(new Date(row.createdAt), 'MMM dd, yyyy') : ''}</TableCell>
-                   <TableCell align="center">
-                    <IconButton size="small" onClick={() => handleViewDetails(row)}><InfoIcon fontSize="inherit" /></IconButton>
-                  </TableCell>
-                </TableRow>
-              ))} */}
+             
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination rowsPerPageOptions={[5, 10, 25]} component="div" count={total} rowsPerPage={rowsPerPage} page={page} onPageChange={(_, newPage) => setPage(newPage)} onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }} />
       </Paper>
 
-       {/* {selectedOrder && (
-        <Dialog open={!!selectedOrder} onClose={handleCloseDetails} maxWidth="md" fullWidth>
-          <DialogTitle sx={{ borderBottom: '1px solid #303030' }}>Order Details: {selectedOrder.CompanyInfo?.CompanyDesiredName}</DialogTitle>
-          <DialogContent dividers sx={{ p:0 }}>
-            <Accordion defaultExpanded>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}><Typography variant="subtitle1">Company Information</Typography></AccordionSummary>
-                <AccordionDetails><Grid container spacing={1}>
-                    <Grid item xs={12} sm={6}><DetailItem label="Alternative Name" value={selectedOrder.CompanyInfo?.CompanyAlternativeName} /></Grid>
-                    <Grid item xs={12} sm={6}><DetailItem label="Business Category" value={selectedOrder.CompanyInfo?.CompanyBusinessCategory} /></Grid>
-                    <Grid item xs={12}><DetailItem label="Description" value={selectedOrder.CompanyInfo?.CompanyBusinessDescription} /></Grid>
-                </Grid></AccordionDetails>
-            </Accordion>
-            <Accordion><AccordionSummary expandIcon={<ExpandMoreIcon />}><Typography variant="subtitle1">Contact & Address</Typography></AccordionSummary>
-                <AccordionDetails><Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
-                        <Typography variant="h6" fontSize="1rem" gutterBottom>Primary Contact</Typography>
-                        <DetailItem label="Name" value={`${selectedOrder.Contact?.ContactFirstName || ''} ${selectedOrder.Contact?.ContactLastName || ''}`} />
-                        <DetailItem label="Email" value={selectedOrder.Contact?.ContactEmail} />
-                        <DetailItem label="Phone" value={selectedOrder.Contact?.ContactPhone} />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                        <Typography variant="h6" fontSize="1rem" gutterBottom>Business Address</Typography>
-                        <DetailItem label="Address" value={`${selectedOrder.BusinessAddress?.BusinessAddressAddress1 || ''}, ${selectedOrder.BusinessAddress?.BusinessAddressAddress2 || ''}`} />
-                        <DetailItem label="City" value={selectedOrder.BusinessAddress?.BusinessAddressCity} />
-                        <DetailItem label="State/Zip" value={`${selectedOrder.BusinessAddress?.BusinessAddressState || ''} ${selectedOrder.BusinessAddress?.BusinessAddressZip || ''}`} />
-                    </Grid>
-                </Grid></AccordionDetails>
-            </Accordion>
-            <Accordion><AccordionSummary expandIcon={<ExpandMoreIcon />}><Typography variant="subtitle1">Participants</Typography></AccordionSummary>
-                <AccordionDetails>{selectedOrder.CompanyParticipants?.map((p, i) => (
-                    <Box key={i} sx={{ mb: i < selectedOrder.CompanyParticipants.length - 1 ? 2 : 0 }}><Grid container spacing={1}>
-                        <Grid item xs={12} sm={4}><DetailItem label="Name" value={`${p.FirstName} ${p.LastName}`} /></Grid>
-                        <Grid item xs={12} sm={4}><DetailItem label="Titles" value={p.Titles?.join(', ')} /></Grid>
-                        <Grid item xs={12} sm={4}><DetailItem label="Ownership" value={`${p.OwnershipPercentage}%`} /></Grid>
-                    </Grid>{ i < selectedOrder.CompanyParticipants.length - 1 && <Divider sx={{my: 1}} />}</Box>
-                ))}</AccordionDetails>
-            </Accordion>
-            <Accordion><AccordionSummary expandIcon={<ExpandMoreIcon />}><Typography variant="subtitle1">Package & Payment</Typography></AccordionSummary>
-                <AccordionDetails><Grid container spacing={1}>
-                    <Grid item xs={12} sm={4}><DetailItem label="Package" value={selectedOrder.selectedPackage?.name} /></Grid>
-                    <Grid item xs={12} sm={4}><DetailItem label="Filing Speed" value={selectedOrder.filingSpeed} /></Grid>
-                    <Grid item xs={12} sm={4}><Typography variant="body2" sx={{display: 'flex', alignItems: 'center', gap: 1}}><strong>Status:</strong> {getStatusChip(selectedOrder.paymentStatus)}</Typography></Grid>
-                </Grid></AccordionDetails>
-            </Accordion> */}
 
 {selectedOrder && (
         <Dialog open={!!selectedOrder} onClose={handleCloseDetails} maxWidth="md" fullWidth>
@@ -711,10 +678,15 @@ function PasswordChangeForm() {
       return;
     }
     try {
+      const adminToken = localStorage.getItem('adminToken');
       await axios.post('https://lauchbackend-896056687002.europe-west1.run.app/api/admin/change-password', {
         currentPassword,
         newPassword
-      }, { withCredentials: true });
+      }, { 
+        headers: {
+          Authorization: `Bearer ${adminToken}`
+        }
+      });
       setCurrentPassword('');
       setNewPassword('');
       toast.success('Password changed successfully.');
@@ -843,6 +815,21 @@ export default function AdminPanle(props) {
       setMobileOpen(false);
     }
   };
+
+  const handleLogout = () => {
+    try {
+      // Clear admin tokens from localStorage
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      
+      // Redirect to login
+      window.location.href = '/admin-login';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still redirect even if there's an error
+      window.location.href = '/admin-login';
+    }
+  };
   
   const menuItems = [
       { text: 'Dashboard', icon: <DashboardIcon />},
@@ -862,6 +849,30 @@ export default function AdminPanle(props) {
               <ListItemText primary={item.text} sx={{ color: selectedMenu === item.text ? '#fff' : '#333' }} />
           </ListItemButton></ListItem>
       ))}</List>
+      
+      {/* Logout Button */}
+      <Box sx={{ mt: 'auto', p: 2 }}>
+        <Divider sx={{ mb: 2 }} />
+        <ListItem disablePadding>
+          <ListItemButton 
+            onClick={handleLogout}
+            sx={{ 
+              color: '#f44336',
+              '&:hover': { 
+                backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                color: '#d32f2f'
+              }, 
+              m: '4px 8px', 
+              borderRadius: '4px' 
+            }}
+          >
+            <ListItemIcon sx={{ color: 'inherit', minWidth: '40px' }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </ListItem>
+      </Box>
     </div>
   );
 
@@ -890,24 +901,40 @@ export default function AdminPanle(props) {
       </Helmet>
       <Box sx={{ display: 'flex' }}>
        <AppBar position="fixed" elevation={0} sx={{ width: { md: `calc(100% - ${drawerWidth}px)` }, ml: { md: `${drawerWidth}px` }, backgroundColor: 'background.paper', borderBottom: '1px solid #ff3902' }}>
-          <Toolbar>
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton 
+                color="inherit" 
+                aria-label="open drawer" 
+                edge="start" 
+                onClick={handleDrawerToggle} 
+                sx={{ 
+                  mr: 2, 
+                  display: { md: 'none' }, // Changed from sm to md to show on more devices
+                  color: '#ff3902',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 57, 2, 0.1)'
+                  }
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap component="div" sx={{ color: '#333' }}>{selectedMenu}</Typography>
+            </Box>
+            
+            {/* Logout Button in AppBar */}
             <IconButton 
-              color="inherit" 
-              aria-label="open drawer" 
-              edge="start" 
-              onClick={handleDrawerToggle} 
+              onClick={handleLogout}
               sx={{ 
-                mr: 2, 
-                display: { md: 'none' }, // Changed from sm to md to show on more devices
-                color: '#ff3902',
+                color: '#f44336',
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 57, 2, 0.1)'
+                  backgroundColor: 'rgba(244, 67, 54, 0.1)',
+                  color: '#d32f2f'
                 }
               }}
             >
-              <MenuIcon />
+              <LogoutIcon />
             </IconButton>
-            <Typography variant="h6" noWrap component="div" sx={{ color: '#333' }}>{selectedMenu}</Typography>
           </Toolbar>
         </AppBar>
         <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }} aria-label="mailbox folders">

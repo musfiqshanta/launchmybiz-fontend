@@ -12,6 +12,7 @@ import {
     FormControlLabel,
     Checkbox
 } from '@mui/material';
+import OutlinedInput from '@mui/material/OutlinedInput';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
@@ -27,6 +28,15 @@ const ContactInformationTab = ({
     isAuthenticated, 
     user 
 }) => {
+    // Safety check to ensure values is not null/undefined
+    if (!values) {
+        return (
+            <Box sx={{ p: 2, textAlign: 'center' }}>
+                <Typography>Loading form...</Typography>
+            </Box>
+        );
+    }
+    
     return (
         <Box>
             <Typography variant="h6" sx={{ 
@@ -49,7 +59,7 @@ const ContactInformationTab = ({
                             fullWidth 
                             name="firstName" 
                             placeholder="Enter First Name" 
-                            value={values.firstName} 
+                            value={values.firstName || ''} 
                             onChange={handleChange} 
                             onBlur={handleBlur} 
                             error={touched.firstName && !!errors.firstName} 
@@ -74,7 +84,7 @@ const ContactInformationTab = ({
                             fullWidth 
                             name="middleName" 
                             placeholder="Enter Middle Name" 
-                            value={values.middleName} 
+                            value={values.middleName || ''} 
                             onChange={handleChange} 
                             onBlur={handleBlur} 
                             error={touched.middleName && !!errors.middleName} 
@@ -101,7 +111,7 @@ const ContactInformationTab = ({
                             fullWidth 
                             name="lastName" 
                             placeholder="Enter Last Name" 
-                            value={values.lastName} 
+                            value={values.lastName || ''} 
                             onChange={handleChange} 
                             onBlur={handleBlur} 
                             error={touched.lastName && !!errors.lastName} 
@@ -125,18 +135,23 @@ const ContactInformationTab = ({
                         <FormControl fullWidth>
                             <Select
                                 name="title"
-                                value={values.title}
+                                value={values.title || ''}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 error={touched.title && !!errors.title}
                                 displayEmpty
-                                sx={{
-                                    ...textFieldStyles,
-                                    '& .MuiSelect-select': {
-                                        paddingLeft: '40px',
-                                        textAlign: 'left'
-                                    }
-                                }}
+                                input={
+                                    <OutlinedInput
+                                      sx={{
+                                        borderRadius: "8px",
+                                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                          borderColor: "#e70000",
+                                        },
+                                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                                          borderColor: "#e70000",
+                                        },
+                                      }}
+                                    /> }
                             >
                                 <MenuItem value="" disabled>
                                     Select Title
@@ -155,7 +170,7 @@ const ContactInformationTab = ({
                 </Box>
 
                 <Box sx={{ display: "flex", gap: {xs: 0, md: 3}, flexDirection: {xs: "column", md: "row"} }}>
-                    <Grid sx={{width: { xs: '100%', md: "50%"}}}>
+                    <Grid sx={{width: { xs: '100%', md: "50%"}, mt: {xs: 2, md: 0}}}>
                         <FormLabel sx={formLabelStyles}>
                         Email Address
                             {/*  {isAuthenticated && user?.email && (
@@ -168,7 +183,7 @@ const ContactInformationTab = ({
                             fullWidth 
                             name="email" 
                             placeholder="Enter Email Address" 
-                            value={values.email} 
+                            value={values.email || ''} 
                             onChange={handleChange} 
                             onBlur={handleBlur} 
                             error={touched.email && !!errors.email} 
@@ -200,7 +215,7 @@ const ContactInformationTab = ({
                             fullWidth 
                             name="phone" 
                             placeholder="Enter Phone Number" 
-                            value={values.phone} 
+                            value={values.phone || ''} 
                             onChange={handleChange} 
                             onBlur={handleBlur} 
                             error={touched.phone && !!errors.phone} 
@@ -224,7 +239,7 @@ const ContactInformationTab = ({
                             control={
                                 <Checkbox
                                     name="hasSSN"
-                                    checked={values.hasSSN}
+                                    checked={values.hasSSN || false}
                                     onChange={handleChange}
                                 />
                             }
@@ -243,7 +258,7 @@ const ContactInformationTab = ({
                                 fullWidth 
                                 name="ssn" 
                                 placeholder="Enter 9-digit SSN" 
-                                value={values.ssn} 
+                                value={values.ssn || ''} 
                                 onChange={handleChange} 
                                 onBlur={handleBlur} 
                                 error={touched.ssn && !!errors.ssn} 

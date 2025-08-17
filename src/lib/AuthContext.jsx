@@ -15,26 +15,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize from localStorage
-  useEffect(() => {
-    try {
-      const storedToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      const storedUser = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
-      if (storedToken) {
-        setToken(storedToken);
-      }
-      if (storedUser) {
-        try {
-          setUser(JSON.parse(storedUser));
-        } catch {
-          // ignore invalid json
-        }
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
+  // Define persist functions first to avoid circular dependency
   const persistUser = useCallback((nextUser) => {
     setUser(nextUser);
     try {
@@ -56,6 +37,63 @@ export function AuthProvider({ children }) {
       }
     } catch {}
   }, []);
+
+  // Initialize from localStorage
+  useEffect(() => {
+    try {
+      const storedToken = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      const storedUser = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+      if (storedToken) {
+        setToken(storedToken);
+      }
+      if (storedUser) {
+        try {
+          setUser(JSON.parse(storedUser));
+        } catch {
+          // ignore invalid json
+        }
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Set up real-time token monitoring
+  useEffect(() => {
+    if (loading) return; // Don't set up monitoring until initial load is complete
+
+    const checkToken = () => {
+      const currentToken = localStorage.getItem('token');
+      if (!currentToken && token) {
+        // Token was removed from localStorage, logout
+      
+        persistToken(null);
+        persistUser(null);
+      } else if (currentToken && !token) {
+        // Token was added to localStorage, update state
+        setToken(currentToken);
+      }
+    };
+
+    // Check token on storage events (when localStorage changes in other tabs)
+    const handleStorageChange = (e) => {
+      if (e.key === 'token') {
+        checkToken();
+      }
+    };
+
+    // Check token periodically (every 5 seconds)
+    const intervalId = setInterval(checkToken, 5000);
+
+    // Listen for storage events
+    window.addEventListener('storage', handleStorageChange);
+
+    // Cleanup
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [token, loading, persistToken, persistUser]);
 
   const login = useCallback(async (credentials) => {
     // Prefer using existing login endpoint; do not rely on baseURL in case it's different
@@ -83,12 +121,26 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     persistToken(null);
     persistUser(null);
-    setUser(null);
   }, [persistToken, persistUser]);
 
+  // Validate token with server
+  const validateToken = useCallback(async () => {
+    if (!token) return false;
+    
+    try {
+      const response = await api.get('/api/validate-token', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.status === 200;
+    } catch (error) {
+     
+      return false;
+    }
+  }, [token]);
+
   const value = useMemo(
-    () => ({ user, token, loading, login, logout, setUser: persistUser }),
-    [user, token, loading, login, logout, persistUser]
+    () => ({ user, token, loading, login, logout, setUser: persistUser, validateToken }),
+    [user, token, loading, login, logout, persistUser, validateToken]
   );
 
   return (

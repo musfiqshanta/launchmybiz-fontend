@@ -7,15 +7,15 @@ import PersonIcon from "@mui/icons-material/Person";
 import InfoIcon from "@mui/icons-material/Info";
 
 const BusinessFormTabs = ({ activeTab, setActiveTab, completedTabs, setSubmitError }) => {
-    console.log('BusinessFormTabs - activeTab:', activeTab, 'completedTabs:', completedTabs);
+   
     
     const handleTabChange = (e, newValue) => {
         // Only allow moving to tabs that are accessible
         if (newValue === 0 || completedTabs.includes(newValue - 1)) {
-            console.log('Tab clicked - moving to tab', newValue);
+           
             setActiveTab(newValue);
         } else {
-            console.log('Tab not accessible yet');
+           // console.log('Tab not accessible yet');
         }
     };
 
@@ -24,6 +24,7 @@ const BusinessFormTabs = ({ activeTab, setActiveTab, completedTabs, setSubmitErr
             value={activeTab} 
             onChange={handleTabChange} 
             sx={{
+                width: "100%",
                 mb: 4,
                 display: "flex",
                 justifyContent: "center",
