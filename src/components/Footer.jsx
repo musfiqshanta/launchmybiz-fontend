@@ -111,10 +111,10 @@ export default function Footer() {
               Contact Us
             </Typography>
 
-            <ContactRow sx={{ fontWeight: 400, color: 'common.white', fontSize: {xs: '10px', md: '16px'} }} st IconComp={Phone} href="tel:+15306258265">+1 (530) 625-8265</ContactRow>
+            <ContactRow sx={{ fontWeight: 400, color: 'common.white', fontSize: {xs: '10px', md: '16px'} }} st IconComp={Phone} href="tel:+15306258265">(307)289-5505</ContactRow>
             <ContactRow sx={{ fontWeight: 400, color: 'common.white', fontSize: {xs: '10px', md: '16px'} }} IconComp={Mail} href="mailto:support@launchmybiz.net">support@launchmybiz.net</ContactRow>
             <ContactRow sx={{ fontWeight: 400, color: 'common.white', fontSize: {xs: '10px', md: '16px'} }} IconComp={LocationOn}>
-              10880 Wilshire Blvd, Suite 101-0048, Los Angeles, CA 90024
+            *Launch My Biz 30 N Gould St Ste R Sheridan, WY 82801*
             </ContactRow>
           </Box>
            </Box>
